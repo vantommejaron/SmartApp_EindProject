@@ -257,7 +257,7 @@ export const lab = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        alignItems: 'flex-start', // if you want to fill rows left to right
+        alignItems: 'flex-start', 
         justifyContent: 'center',
         marginLeft: 20,
 
@@ -354,9 +354,175 @@ export const lab = StyleSheet.create({
     DeviceContainer: {
         flex: 1,
         marginTop: 100,
-        marginLeft: 20,
+        // marginLeft: 40,
         maxWidth: 300,
+        marginLeft: 40,
+        marginBottom: 50,
+    }, 
+    iconContainer: {
+        marginTop: 20,
+        gap: 20,
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start', 
+        justifyContent: 'center',
+        marginLeft: 20,
+
     },
+    icon: {
+        width: 50,
+        height: 50,
+        borderColor: colors.logo,
+        borderWidth: 1,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    AddDevice_title: {
+        color: colors.title,
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginTop: 60,
+        marginLeft: 0,
+    },
+    inputAddDevice: {
+        marginLeft: 50,
+        marginTop: 20,
+        padding: 10,
+        borderRadius: 30,
+        fontSize: 20,
+        width: 300,
+        color: colors.description,
+    },
+    iconSelected: {
+        width: 50,
+        height: 50,
+        borderColor: colors.accent,
+        borderWidth: 1,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    toggleSwitch : {
+        // flex: 1,
+        // marginTop: 60,
+        // alignSelf: 'center',
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        transform: [{ scaleX: 1.3 }, { scaleY: 1.3 },{ translateY: -205}]
+    },
+    SetRoomLightOff: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    SetRoomLightOffText: {
+        color: colors.description,
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 20,
+        marginLeft: 0,
+    },
+    chooseColorText: {
+        color: colors.title,
+        fontSize: 15,
+        fontWeight: 'bold',
+        marginTop: 20,
+        justifyContent: 'center',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        transform: [{ translateY: 80}],
+    },
+    chooseColorTextOff: {
+        opacity: 0,
+    },
+    chooseDeviceText: {
+        color: colors.title,
+        fontSize: 15,
+        fontWeight: 'bold',
+        marginTop: 20,
+        justifyContent: 'center',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        transform: [{ translateY: 50}],
+    },
+    chooseDeviceTextOff: {
+        opacity: 0,
+    },
+    containerSlider: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    sliderText: {
+        color: colors.title,
+        fontSize: 30,
+        fontWeight: 'bold',
+    },
+    containerCooling: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    CoolingStateText: {
+        flex: 1,
+        color: colors.title,
+        fontSize: 60,
+        fontWeight: 'bold',
+        marginTop: 20,
+        marginLeft: 0,
+        marginBottom: 20,
+    },
+    CoolingStateButton: {
+        flex: 1,
+        width: 50,
+        height: 100,
+        borderWidth: 1,
+        borderColor: colors.title,
+        borderRadius: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        transform: [{scale: .5}],
+    },
+    CoolingStateButtonText: {
+        color: colors.title,
+        fontSize: 40,
+        fontWeight: 'bold',
+    },
+    CoolingStateButtonTextBottom: {
+        color: colors.title,
+        fontSize: 20,
+        fontWeight: 'bold',
+        transform: [{translateY: -100}],
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+    buttonColorPicker: { 
+        color: colors.title,
+        marginLeft: 40,
+        width: 200,
+        height: 50,
+        backgroundColor: colors.accent,
+        borderRadius: 30,
+        transform: [{ translateY: 20}],
+    },
+    buttonColorPickerText: {
+        color: colors.title,
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: 12,
+    },
+
+
+
+
+
+
+
 
 
 

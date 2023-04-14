@@ -1,0 +1,50 @@
+## Wat ga ik maken
+
+Ik ga een smart home app maken. Dat is dus een app waarmee je de verwarming, lichten, speakers, airconditioning, ... aan en uit kan zetten. Ik heb gekozen voor dit idee omdat ik het zelf ook zou willen hebben thuis en het lijkt me dus leuk om daar iets voor te maken.
+
+## Hoe ga je het technisch (ongeveer) uitwerken?
+
+Voor het opslaan van data ga ik de dingen zoals temperatuur moeten opslaan en welke lapen er aan of uit zijn, ...
+Ik ga 2 soorten navigation gebruiken.
+
+1. Drawer navigation met hamburger menu voor het navigeren naar de settings en andere zaken
+2. Stack navigation voor terug te keren als je op een item geklikt hebt.
+
+## Wat wordt je insteek voor de UI?
+
+- https://www.google.com/url?sa=i&url=https%3A%2F%2Fnl.freepik.com%2Fpremium-vector%2Fsmart-home-app-interface_9427838.htm&psig=AOvVaw1sNjX9djHeIWzpunwMLx-v&ust=1678265851692000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCOiCgNC5yf0CFQAAAAAdAAAAABAE
+
+- https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.arkasoftwares.com%2Fblog%2Fhow-to-build-a-smart-home-app%2F&psig=AOvVaw0S_D1TQlz3s3UsNIEbPR2f&ust=1678267698492000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCLilvsDAyf0CFQAAAAAdAAAAABAO
+
+## Op welk platform ga je focussen?
+
+Ik ga mij focussen op IOS
+
+## Op welke GitHub-repository werk je?
+
+https://github.com/vantommejaron/SmartApp_EindProject.git
+
+## Links voor API
+
+- https://blog.logrocket.com/react-native-color-picker-libraries/
+  `(Color picker)`
+
+- https://reactnativeelements.com/docs/4.0.0-beta.0/circularslider
+- https://www.npmjs.com/package/react-native-circle-slider
+  `(Circle slider)`
+
+- https://reactnative.dev/docs/switch
+  `(Switch button)`
+
+- https://docs.expo.dev/versions/v48.0.0/sdk/font/
+  `(Text Font) `
+
+- https://docs.expo.dev/versions/v48.0.0/sdk/image/
+  `(image inladen)`
+
+- https://docs.expo.dev/versions/v48.0.0/sdk/linear-gradient/
+  `(linear-gradient)`
+
+- https://snack.expo.dev/@tafelito/switch-example
+  `(Toggle switch)`
+

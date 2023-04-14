@@ -1,0 +1,190 @@
+{
+	"GetReady": false, 
+	"User": "",
+	"lights":
+	[
+		{
+		"name": "Philips Smart",
+		"description": "Bluetooth light bulb E27"
+		
+		},
+		{
+			"name": "Hoftronic Smart",
+			"description": "Bluetooth light bulb E27"
+		},
+		{
+			"name": "Philips Smart",
+			"description": "Bluetooth light bulb A60"
+			
+		}
+	],
+	"heating":
+	{
+		"name": "Hama",
+		"description": "Bluetooth Thermostatic"
+	},
+	"airconditioning":
+	{
+		"name": "Bestron smart",
+		"description": "Bluetooth airconditioning"
+	},
+	"rooms":
+	[
+		{
+			"name": "Bedroom",
+			"icon": "",
+			"light":
+			[{
+				"status": false,
+				"color": "#000",
+				"brightness" : 0,
+				"cool": 0,
+				"device": false
+			}],
+			"heating":
+			[{
+				"status": false,
+				"temp": 0,
+				"device": false
+				
+			}],
+			"cooling":
+			[{
+				"status": false,
+				"speed": 0,
+				"device": false
+				
+            }]
+		},
+		{
+			"name": "Living room",
+			"icon": "",
+			"light":
+			[{
+				"status": false,
+				"color": "#000",
+				"brightness" : 0,
+				"cool": 0,
+				"device": false
+            }],
+			"heating":
+			[{
+				"status": false,
+				"temp": 0,
+				"device": false
+				
+            }],
+			"cooling":
+			[{
+				"status": false,
+				"speed": 0,
+				"device": false
+				
+            }]
+		},
+		{
+			"name": "Kitchen",
+			"icon": "",
+			"light":
+			[{
+				"status": false,
+				"color": "#000",
+				"brightness" : 0,
+				"cool": 0,
+				"device": false
+            }],
+			"heating":
+			[{
+				"status": false,
+				"temp": 0,
+				"device": false
+				
+            }],
+			"cooling":
+			[{
+				"status": false,
+				"speed": 0,
+				"device": false
+				
+            }]
+		},
+		{
+			"name": "Bathroom",
+			"icon": "",
+			"light":
+			[{
+				"status": false,
+				"color": "#000",
+				"brightness" : 0,
+				"cool": 0,
+				"device": false
+            }],
+			"heating":
+			[{
+				"status": false,
+				"temp": 0,
+				"device": false
+				
+            }],
+			"cooling":
+			[{
+				"status": false,
+				"speed": 0,
+				"device": false
+				
+            }]
+		},
+		{
+			"name": "Dinner room",
+			"icon": "",
+			"light":
+			[{
+				"status": false,
+				"color": "#000",
+				"brightness" : 0,
+				"cool": 0,
+				"device": false
+            }],
+			"heating":
+			[{
+				"status": false,
+				"temp": 0,
+				"device": false
+				
+            }],
+			"cooling":
+			[{
+				"status": false,
+				"speed": 0,
+				"device": false
+				
+            }]
+		},
+		{
+			"name": "Office",
+			"icon": "",
+			"light":
+			[{
+				"status": false,
+				"color": "#000",
+				"brightness" : 0,
+				"cool": 0,
+				"device": false
+            }],
+			"heating":
+			[{
+				"status": false,
+				"temp": 0,
+				"device": false
+				
+            }],
+			"cooling":
+			[{
+				"status": false,
+				"speed": 0,
+				"device": false
+				
+            }]
+		}
+	]	
+}
