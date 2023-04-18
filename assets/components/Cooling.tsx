@@ -7,9 +7,12 @@ import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import { View } from 'lucide-react'
 
-export const Cooling = () => {
+export const Cooling = ({brand, name}:{brand:string, name:string}) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+    SendCooling = () => {
+      console.log('brand: ' + brand + ' name: ' + name + '')
+    }
   return (
     <>
       <Ionicons
@@ -21,13 +24,15 @@ export const Cooling = () => {
       <Pressable
         style={[labStyle.button_light, labStyle.Choose_LightBulb_Box]}
         onPress={() => {
-            // TODO: Set status false for index.tsx zodat hij wisselt naar de andere schermen
+            // TODO: Send to database!! (status true, zodat het naar homescreen gaat)
+
           navigate('HomeScreen')
+          SendCooling()
         }}
       >
         <Text style={labStyle.Cooling_title}>Bestron Smart</Text>
         <Text style={labStyle.Cooling_description}>
-          Bluetooth lightbulb E27
+          Bluetooth Cooling E27
         </Text>
       </Pressable>
     </>

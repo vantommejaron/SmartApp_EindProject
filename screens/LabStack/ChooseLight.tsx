@@ -44,13 +44,13 @@ export default () => {
             Choose a light device you want to connect
           </Text>
           <ScrollView>
-            <Lamp/>
-            <Lamp/>
-            <Lamp/>
-            <Lamp/>
-            <Lamp/>
-            <Lamp/>
-            <Lamp/>
+            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
+            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
+            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
+            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
+            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
+            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
+            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>  
           </ScrollView>
         </View>
       </View>

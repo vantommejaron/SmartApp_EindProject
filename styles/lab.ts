@@ -507,7 +507,8 @@ export const lab = StyleSheet.create({
         height: 50,
         backgroundColor: colors.accent,
         borderRadius: 30,
-        transform: [{ translateY: 20}],
+        marginTop: -30,
+        transform: [{ translateY: 0}],
     },
     buttonColorPickerText: {
         color: colors.title,
@@ -516,6 +517,14 @@ export const lab = StyleSheet.create({
         textAlign: 'center',
         marginTop: 12,
     },
+    sliderTextLights: {
+        color: colors.title,
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: -30,
+        transform: [{ translateX: -20}],
+    },
+
 
 
 

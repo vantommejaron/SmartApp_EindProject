@@ -38,7 +38,14 @@ export default () => {
     }
   }
   const [checkToggle1, setcheckToggle1] = useState(true)
+  const SetCooling = () => {
+    const Cooling = coolingValue
+    // TODO: Send to database!!
+    console.log('Cooling: ' + Cooling)
+  }
   if (checkToggle1) {
+    // TODO: Send to database!!
+    console.log('CooligSwitch is on')
     return (
       <>
         <Switch
@@ -70,10 +77,20 @@ export default () => {
           </Pressable>
         </View>
         <Text style={labStyle.CoolingStateButtonTextBottom}>BLOW SPEED</Text>
+        <Pressable
+          style={labStyle.buttonColorPicker}
+          onPress={() => {
+            SetCooling()
+          }}
+        >
+          <Text style={labStyle.buttonColorPickerText}>Set</Text>
+        </Pressable>
       </>
     )
   }
   if (!checkToggle1) {
+    // TODO: Send to database!!
+    console.log('CoolingSwitch is off')
     return (
       <Switch
         style={labStyle.toggleSwitch}

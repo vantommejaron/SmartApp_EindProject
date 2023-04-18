@@ -43,13 +43,15 @@ export default () => {
             Choose a light device you want to connect
           </Text>
           <ScrollView>
-            <Heating />
-            <Heating />
-            <Heating />
-            <Heating />
-            <Heating />
-            <Heating />
-            <Heating />
+            <Heating brand="Hama" name="Bluetooth heater E27"/>
+            <Heating brand="Hama" name="Bluetooth heater E27"/>
+            <Heating brand="Hama" name="Bluetooth heater E27"/>
+            <Heating brand="Hama" name="Bluetooth heater E27"/>
+            <Heating brand="Hama" name="Bluetooth heater E27"/>
+            <Heating brand="Hama" name="Bluetooth heater E27"/>
+            <Heating brand="Hama" name="Bluetooth heater E27"/>
+            <Heating brand="Hama" name="Bluetooth heater E27"/>
+            
           </ScrollView>
         </View>
       </View>

@@ -6,10 +6,15 @@ import { ParamListBase } from '@react-navigation/native'
 import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import { View } from 'lucide-react'
+import { useState } from 'react'
 
-export const Lamp = () => {
+export const Lamp = ({name, brand} :{name:string, brand:string}) => {
     const { navigate, goBack } =
       useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+      const SendLight = () => {
+        // TODO: Send to database!!
+        console.log(`'brand: ' + ${brand} + ' name: ' + ${name}'`)
+      }
     return (
       <>
         <Ionicons
@@ -22,10 +27,11 @@ export const Lamp = () => {
           style={[labStyle.button_light, labStyle.Choose_LightBulb_Box]}
           onPress={() => {
             navigate('ChooseHeating')
+            SendLight()
           }}
         >
-          <Text style={labStyle.Light_title}>Philips Smart</Text>
-          <Text style={labStyle.Light_description}>Philips Smart LED E27</Text>
+          <Text style={labStyle.Light_title}>{brand}</Text>
+          <Text style={labStyle.Light_description}>{name}</Text>
         </Pressable>
       </>
     )

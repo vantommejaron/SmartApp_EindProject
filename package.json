@@ -20,6 +20,7 @@
     "expo": "~48.0.9",
     "expo-image": "~1.0.0",
     "expo-status-bar": "~1.4.4",
+    "hsl-to-hex": "^1.0.0",
     "lucide": "^0.127.0",
     "lucide-react": "^0.127.0",
     "lucide-react-native": "^0.129.0",

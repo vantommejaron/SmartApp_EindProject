@@ -43,13 +43,11 @@ export default () => {
             Choose a light device you want to connect
           </Text>
           <ScrollView>
-            <Cooling />
-            <Cooling />
-            <Cooling />
-            <Cooling />
-            <Cooling />
-            <Cooling />
-            <Cooling />
+            <Cooling brand="Bestron Smart" name="Bluetooth Cooling E27" />
+            <Cooling brand="Bestron Smart" name="Bluetooth Cooling E27" />
+            <Cooling brand="Bestron Smart" name="Bluetooth Cooling E27" />
+            <Cooling brand="Bestron Smart" name="Bluetooth Cooling E27" />
+            
           </ScrollView>
         </View>
       </View>

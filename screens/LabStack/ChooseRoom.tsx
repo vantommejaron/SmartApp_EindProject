@@ -15,6 +15,7 @@ export default () => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const SendRoom = (name: string) => {
+    // TODO: Send to database!!
     console.log(name)
   }
   return (

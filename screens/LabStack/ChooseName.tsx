@@ -16,6 +16,7 @@ export default () => {
   const { navigate, goBack } = useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const [text, onChangeText] = React.useState('Your name')
   const SendName = (name: string) => {
+    // TODO: Send to database!!
     console.log(name)
   }
   return (

@@ -7,9 +7,12 @@ import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import { View } from 'lucide-react'
 
-export const Heating = () => {
+export const Heating = ({brand, name}:{brand:string, name:string}) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+    const SendHeating = () => {
+      console.log('brand: ' + brand + ' name: ' + name + '')
+    }
   return (
     <>
       <Ionicons
@@ -22,6 +25,7 @@ export const Heating = () => {
         style={[labStyle.button_light, labStyle.Choose_LightBulb_Box]}
         onPress={() => {
           navigate('ChooseCooling')
+          SendHeating()
         }}
       >
         <Text style={labStyle.Heating_title}>Hama</Text>

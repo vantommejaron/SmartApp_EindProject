@@ -45,9 +45,9 @@ export default () => {
         alert('Please choose an icon for your room.')
     }
     if (text != 'Your room name' && icon != 0) {
+      //TODO: Send to database!!
         navigate('HomeScreen'), 
-        console.log(icon),
-        console.log(text)
+        console.log('Icon: ' + icon + ' Name: ' + text)
     }
 
   }
