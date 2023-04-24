@@ -10,6 +10,7 @@ import { Svg, Path } from 'react-native-svg'
 import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useState } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import {
   Sofa,
   BedDouble,
@@ -19,37 +20,33 @@ import {
   Laptop,
   PlusIcon,
   CarIcon,
-  Gamepad2,  
+  Gamepad2,
 } from 'lucide-react-native'
 
-export default () => {
+export default (roomArray:any) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
-  const [text, onChangeText] = React.useState('Your room name')
-  const [icon, seticon] = useState(0)
-  const [check1, setCheck1] = useState(false)
-  const [check2, setCheck2] = useState(false)
-  const [check3, setCheck3] = useState(false)
-  const [check4, setCheck4] = useState(false)
-  const [check5, setCheck5] = useState(false)
-  const [check6, setCheck6] = useState(false)
-  const [check7, setCheck7] = useState(false)
-  const [check8, setCheck8] = useState(false)
-  
-  const SendIconAndName = (icon: any, text:string) => {
-    // TODO: CHECK IF THE NAME IS ALREADY IN JSON
-    if (text == 'Your room name' || text == '') {
-        alert('Please enter a name for your room.')
-    } 
-    if (icon == 0) {
-        alert('Please choose an icon for your room.')
+  const room = roomArray.route.params.roomArray
+  console.log(room)
+  const SendToLocalStorage = (roomName: string) => {
+    let data = {
+      roomName: roomName,
+      roomIcon: roomName,
+      lightBrand: '',
+      lightName: '',
+      lightState: false,
+      heatingBrand: '',
+      heatingName: '',
+      hetingState: false,
+      coolingBrand: '',
+      coolingName: '',
+      CoolingState: false,
     }
-    if (text != 'Your room name' && icon != 0) {
-      //TODO: Send to database!!
-        navigate('HomeScreen'), 
-        console.log('Icon: ' + icon + ' Name: ' + text)
-    }
-
+    // Save data to local storage (AsyncStorage)
+    AsyncStorage.setItem(roomName, JSON.stringify(data))
+    AsyncStorage.getItem(roomName).then(value => {
+      console.log(value)
+    })
   }
   return (
     <>
@@ -62,193 +59,66 @@ export default () => {
             style={labStyle.GoBack}
           />
         </Pressable>
-        <View style={[labStyle.background, labStyle.containerName]}>
-          <Text style={labStyle.Welcome_title}>Enter your room name.</Text>
-          <TextInput
-            style={labStyle.inputAddDevice}
-            onChangeText={onChangeText}
-            value={text}
-          />
-          <Text style={labStyle.AddDevice_title}>Choose an icon:</Text>
-          <View>
-            <View style={labStyle.iconContainer}>
-              <Pressable
-                style={!check1 ? labStyle.icon : labStyle.iconSelected}
-                onPress={() => {
-                  [
-                    setCheck1(true),
-                    setCheck2(false),
-                    setCheck3(false),
-                    setCheck4(false),
-                    setCheck5(false),
-                    setCheck6(false),
-                    setCheck7(false),
-                    setCheck8(false),
-                    seticon(1),
-                  ]
-                }}
-              >
-                <BedDouble
-                  size={30}
-                  color={!check1 ? colors.title : colors.accent}
-                />
-              </Pressable>
-              <Pressable
-                style={!check2 ? labStyle.icon : labStyle.iconSelected}
-                onPress={() => {
-                  ;[
-                    setCheck1(false),
-                    setCheck2(true),
-                    setCheck3(false),
-                    setCheck4(false),
-                    setCheck5(false),
-                    setCheck6(false),
-                    setCheck7(false),
-                    setCheck8(false),
-                    seticon(2),
-                  ]
-                }}
-              >
-                <Sofa
-                  size={30}
-                  color={!check2 ? colors.title : colors.accent}
-                />
-              </Pressable>
-              <Pressable
-                style={!check3 ? labStyle.icon : labStyle.iconSelected}
-                onPress={() => {
-                  ;[
-                    setCheck1(false),
-                    setCheck2(false),
-                    setCheck3(true),
-                    setCheck4(false),
-                    setCheck5(false),
-                    setCheck6(false),
-                    setCheck7(false),
-                    setCheck8(false),
-                    seticon(3),
-                  ]
-                }}
-              >
-                <Microwave
-                  size={30}
-                  color={!check3 ? colors.title : colors.accent}
-                />
-              </Pressable>
-              <Pressable
-                style={!check4 ? labStyle.icon : labStyle.iconSelected}
-                onPress={() => {
-                  ;[
-                    setCheck1(false),
-                    setCheck2(false),
-                    setCheck3(false),
-                    setCheck4(true),
-                    setCheck5(false),
-                    setCheck6(false),
-                    setCheck7(false),
-                    setCheck8(false),
-                    seticon(4),
-                  ]
-                }}
-              >
-                <Bath
-                  size={30}
-                  color={!check4 ? colors.title : colors.accent}
-                />
-              </Pressable>
-              <Pressable
-                style={!check5 ? labStyle.icon : labStyle.iconSelected}
-                onPress={() => {
-                  ;[
-                    setCheck1(false),
-                    setCheck2(false),
-                    setCheck3(false),
-                    setCheck4(false),
-                    setCheck5(true),
-                    setCheck6(false),
-                    setCheck7(false),
-                    setCheck8(false),
-                    seticon(5),
-                  ]
-                }}
-              >
-                <UtensilsCrossed
-                  size={30}
-                  color={!check5 ? colors.title : colors.accent}
-                />
-              </Pressable>
-              <Pressable
-                style={!check6 ? labStyle.icon : labStyle.iconSelected}
-                onPress={() => {
-                  ;[
-                    setCheck1(false),
-                    setCheck2(false),
-                    setCheck3(false),
-                    setCheck4(false),
-                    setCheck5(false),
-                    setCheck6(true),
-                    setCheck7(false),
-                    setCheck8(false),
-                    seticon(6),
-                  ]
-                }}
-              >
-                <Laptop
-                  size={30}
-                  color={!check6 ? colors.title : colors.accent}
-                />
-              </Pressable>
-              <Pressable
-                style={!check7 ? labStyle.icon : labStyle.iconSelected}
-                onPress={() => {
-                  ;[
-                    setCheck1(false),
-                    setCheck2(false),
-                    setCheck3(false),
-                    setCheck4(false),
-                    setCheck5(false),
-                    setCheck6(false),
-                    setCheck7(true),
-                    setCheck8(false),
-                    seticon(7),
-                  ]
-                }}
-              >
-                <CarIcon
-                  size={30}
-                  color={!check7 ? colors.title : colors.accent}
-                />
-              </Pressable>
-              <Pressable
-                style={!check8 ? labStyle.icon : labStyle.iconSelected}
-                onPress={() => {
-                  ;[
-                    setCheck1(false),
-                    setCheck2(false),
-                    setCheck3(false),
-                    setCheck4(false),
-                    setCheck5(false),
-                    setCheck6(false),
-                    setCheck7(false),
-                    setCheck8(true),
-                    seticon(8),
-                  ]
-                }}
-              >
-                <Gamepad2
-                  size={30}
-                  color={!check8 ? colors.title : colors.accent}
-                />
-              </Pressable>
-            </View>
+        <View style={[labStyle.background, labStyle.containerRoom]}>
+          <Text style={labStyle.Room_title}>
+            Choose a room where you want to add a device
+          </Text>
+          <View style={labStyle.button_room}>
+            {/* BEDROOM */}
+            <Pressable
+              onPress={() => {
+                navigate('HomeScreen', { room: 'BedRoom' })
+                SendToLocalStorage('BedRoom')
+              }}
+            >
+              <Text style={labStyle.button_room_text}>→ㅤBedroom</Text>
+            </Pressable>
+            {/* Living room */}
+            <Pressable
+              onPress={() => {
+                navigate('HomeScreen', { room: 'LivingRoom' })
+                SendToLocalStorage('LivingRoom')
+              }}
+            >
+              <Text style={labStyle.button_room_text}>→ㅤLiving room</Text>
+            </Pressable>
+            {/* KITCHEN */}
+            <Pressable
+              onPress={() => {
+                navigate('HomeScreen', { room: 'Kitchen' })
+                SendToLocalStorage('Kitchen')
+              }}
+            >
+              <Text style={labStyle.button_room_text}>→ㅤKitchen</Text>
+            </Pressable>
+            {/* BATHROOM */}
+            <Pressable
+              onPress={() => {
+                navigate('HomeScreen', { room: 'BathRoom' })
+                SendToLocalStorage('BathRoom')
+              }}
+            >
+              <Text style={labStyle.button_room_text}>→ㅤBathroom</Text>
+            </Pressable>
+            {/* DINNER ROOM */}
+            <Pressable
+              onPress={() => {
+                navigate('HomeScreen', { room: 'DinnerRoom' })
+                SendToLocalStorage('DinnerRoom')
+              }}
+            >
+              <Text style={labStyle.button_room_text}>→ㅤDinner room</Text>
+            </Pressable>
+            {/* OFFICE */}
+            <Pressable
+              onPress={() => {
+                navigate('HomeScreen', { room: 'Office' })
+                SendToLocalStorage('Office')
+              }}
+            >
+              <Text style={labStyle.button_room_text}>→ㅤOffice</Text>
+            </Pressable>
           </View>
-          <Pressable
-            style={labStyle.button_onboarding_next}
-            onPress={() => {[SendIconAndName(icon, text)]
-            }}
-          >
-            <Text style={labStyle.button_onboarding_text}>Create room</Text>
-          </Pressable>
         </View>
       </View>
     </>

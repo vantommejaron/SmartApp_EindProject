@@ -19,15 +19,31 @@ import React, { useState } from 'react'
 import { CheckBox } from '@rneui/themed'
 import Svg, { Circle, Rect } from 'react-native-svg'
 import { Lamp } from '../../assets/components/Lamp'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 type CheckboxComponentProps = {}
 
-export default () => {
+export default (room: any) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const [isSelected, setSelection] = useState(false)
   const [check1, setCheck1] = useState(false)
+
+  const roomName = room.route.params.room
+  
+  const SendToLocalStorage = () => {
+    let data = {
+      lightBrand: '',
+      lightName: '',
+    }
+    AsyncStorage.mergeItem(roomName, JSON.stringify(data))
+    AsyncStorage.getItem(roomName).then((value) => {
+      console.log(value)
+    }
+    )
+  }
+
   return (
     <>
       <View style={labStyle.background}>
@@ -44,14 +60,50 @@ export default () => {
             Choose a light device you want to connect
           </Text>
           <ScrollView>
-            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
-            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
-            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
-            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
-            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
-            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>
-            <Lamp brand="Philips Smart" name="Philips Smart LED E2"/>  
+            <Lamp
+              lightBrand="Philips Smart"
+              lightName="Philips Smart LED E2"
+              roomName={roomName}
+            />
+            <Lamp
+              lightBrand="Philips Smart"
+              lightName="Philips Smart LED E2"
+              roomName={roomName}
+            />
+            <Lamp
+              lightBrand="Philips Smart"
+              lightName="Philips Smart LED E2"
+              roomName={roomName}
+            />
+            <Lamp
+              lightBrand="Philips Smart"
+              lightName="Philips Smart LED E2"
+              roomName={roomName}
+            />
+            <Lamp
+              lightBrand="Philips Smart"
+              lightName="Philips Smart LED E2"
+              roomName={roomName}
+            />
+            <Lamp
+              lightBrand="Philips Smart"
+              lightName="Philips Smart LED E2"
+              roomName={roomName}
+            />
+            <Lamp
+              lightBrand="Philips Smart"
+              lightName="Philips Smart LED E2"
+              roomName={roomName}
+            />
           </ScrollView>
+          <Pressable
+            onPress={() => {
+              navigate('ChooseHeating', { room: roomName })
+              SendToLocalStorage()
+            }}
+          >
+            <Text style={labStyle.skipButton}>SKIP</Text>
+          </Pressable>
         </View>
       </View>
     </>

@@ -10,14 +10,34 @@ import { Svg, Path } from 'react-native-svg'
 import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import React from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Send } from 'lucide-react'
 
 export default () => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
-  const SendRoom = (name: string) => {
-    // TODO: Send to database!!
-    console.log(name)
+  const [text, onChangeText] = React.useState('')
+  const SendToLocalStorage = (roomName:string) => {
+    let data = {
+      roomName: roomName,
+      roomIcon: roomName,
+      lightBrand: '',
+      lightName: '',
+      lightState: false,
+      heatingBrand: '',
+      heatingName: '',
+      hetingState: false,
+      coolingBrand: '',
+      coolingName: '',
+      CoolingState: false,
+    }
+    // Save data to local storage (AsyncStorage)
+    AsyncStorage.setItem(roomName, JSON.stringify(data))
+    AsyncStorage.getItem(roomName).then((value) => {
+      console.log(value)
+    })
   }
+
   return (
     <>
       <View style={labStyle.background}>
@@ -36,66 +56,54 @@ export default () => {
           <View style={labStyle.button_room}>
             {/* BEDROOM */}
             <Pressable
-              onPressIn={() => {
-                SendRoom('bedroom')
-              }}
-              onPressOut={() => {
-                navigate('ChooseLight')
+              onPress={() => {
+                navigate('ChooseLight', { room: 'BedRoom' })
+                SendToLocalStorage('BedRoom')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤBedroom</Text>
             </Pressable>
             {/* Living room */}
             <Pressable
-              onPressIn={() => {
-                SendRoom('livingroom')
-              }}
-              onPressOut={() => {
-                navigate('ChooseLight')
+              onPress={() => {
+                navigate('ChooseLight', { room: 'LivingRoom' })
+                SendToLocalStorage('LivingRoom')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤLiving room</Text>
             </Pressable>
             {/* KITCHEN */}
             <Pressable
-              onPressIn={() => {
-                SendRoom('kitchen')
-              }}
-              onPressOut={() => {
-                navigate('ChooseLight')
+              onPress={() => {
+                navigate('ChooseLight', { room: 'Kitchen' })
+                SendToLocalStorage('Kitchen')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤKitchen</Text>
             </Pressable>
             {/* BATHROOM */}
             <Pressable
-              onPressIn={() => {
-                SendRoom('bathroom')
-              }}
-              onPressOut={() => {
-                navigate('ChooseLight')
+              onPress={() => {
+                navigate('ChooseLight', { room: 'BathRoom' })
+                SendToLocalStorage('BathRoom')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤBathroom</Text>
             </Pressable>
             {/* DINNER ROOM */}
             <Pressable
-              onPressIn={() => {
-                SendRoom('dinnerroom')
-              }}
-              onPressOut={() => {
-                navigate('ChooseLight')
+              onPress={() => {
+                navigate('ChooseLight', { room: 'DinnerRoom' })
+                SendToLocalStorage('DinnerRoom')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤDinner room</Text>
             </Pressable>
             {/* OFFICE */}
             <Pressable
-              onPressIn={() => {
-                SendRoom('office')
-              }}
-              onPressOut={() => {
-                navigate('ChooseLight')
+              onPress={() => {
+                navigate('ChooseLight', { room: 'Office' })
+                SendToLocalStorage('Office')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤOffice</Text>

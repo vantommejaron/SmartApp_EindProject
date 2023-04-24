@@ -9,7 +9,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { Svg, Path } from 'react-native-svg'
 import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { PropsWithChildren } from 'react'
 import { LabStack } from '.'
 import { TouchableOpacity } from 'react-native'
@@ -23,82 +23,97 @@ import {
   PlusIcon,
 } from 'lucide-react-native'
 import Icons from '../../assets/components/Icons'
-import { ScrollView } from 'react-native-gesture-handler'
+import { FlatList, ScrollView } from 'react-native-gesture-handler'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Room } from '../../assets/components/Room'
 
-export default () => {
+export default (room:any) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
-  const [text, onChangeText] = React.useState('Your name')
-  const SendName = (name: string) => {
-    console.log(name)
+  const [name, SetName] = React.useState('')
+  AsyncStorage.getItem('Settings').then(value => {
+    SetName(JSON.parse(value).userName)
+  })
+  const [roomArray, SetRoomArray] = React.useState([])
+  console.log(room.route.params.room)
+  if (room.route.params.room != undefined) {
+    if (roomArray.includes(room.route.params.room) == false) {
+      roomArray.push(room.route.params.room)
+    }
   }
-  const [flexDirection, setflexDirection] = useState('column')
+
+  AsyncStorage.getAllKeys().then(value => {
+    for (let index = 0; index < value.length; index++) {
+      const element = value[index]
+      if (element != 'Settings' && roomArray.includes(element) == false) {
+        roomArray.push(element)
+        SetRoomArray(roomArray)
+      }
+    }
+  })
+
+  // 👇 RESETS THE APP
+  // AsyncStorage.setItem('Settings', JSON.stringify({ setupState: true }))
+  // AsyncStorage.clear()
+  // SetRoomArray([])
+
+  // const GetRooms = (item: any) => {
+  //   return (
+  //     <>
+  //       <Pressable
+  //         style={labStyle.HomeScreenButton}
+  //         onPress={() => {
+  //           navigate('SetRoom', { room: item })
+  //         }}
+  //       >
+  //         <Icons icon={item} style={labStyle.HomeIcon} size={80} />
+  //         {/* <BedDouble style={labStyle.HomeIcon} size={80} /> */}
+  //         <Text style={labStyle.HomeScreenButton_Text}>{item}</Text>
+  //       </Pressable>
+  //     </>
+  //   )
+  // }
+
   return (
     <>
       <View style={labStyle.background}>
         <View style={[labStyle.background, labStyle.containerHomeScreen]}>
           <Text style={labStyle.User}>
             <Text style={labStyle.User1}>Hello, </Text>
-            <Text style={labStyle.User2}>User</Text>
+            <Text style={labStyle.User2}>{name}</Text>
           </Text>
           <ScrollView style={labStyle.HomeScreenScrollView}>
             <View style={labStyle.HomeScreenBox}>
-              <Pressable
-                style={labStyle.HomeScreenButton}
-                onPress={() => navigate('SetRoom', { room: 'Bedroom' })}
-              >
-                <Icons number={1} style={labStyle.HomeIcon} size={80} />
-                {/* <BedDouble style={labStyle.HomeIcon} size={80} /> */}
-                <Text style={labStyle.HomeScreenButton_Text}>Bedroom</Text>
-              </Pressable>
-              <Pressable
-                style={labStyle.HomeScreenButton}
-                onPress={() => navigate('SetRoom', { room: 'Living room' })}
-              >
-                <Icons number={2} style={labStyle.HomeIcon} size={80} />
-                {/* <Sofa style={labStyle.HomeIcon} size={80} /> */}
-                <Text style={labStyle.HomeScreenButton_Text}>Living room</Text>
-              </Pressable>
-              <Pressable
-                style={labStyle.HomeScreenButton}
-                onPress={() => navigate('SetRoom', { room: 'Kitchen' })}
-              >
-                <Icons number={3} style={labStyle.HomeIcon} size={80} />
-                {/* <Microwave style={labStyle.HomeIcon} size={80} /> */}
-                <Text style={labStyle.HomeScreenButton_Text}>Kitchen</Text>
-              </Pressable>
-              <Pressable
-                style={labStyle.HomeScreenButton}
-                onPress={() => navigate('SetRoom', { room: 'Bathroom' })}
-              >
-                <Icons number={4} style={labStyle.HomeIcon} size={80} />
-                {/* <Bath style={labStyle.HomeIcon} size={80} /> */}
-                <Text style={labStyle.HomeScreenButton_Text}>Bathroom</Text>
-              </Pressable>
-              <Pressable
-                style={labStyle.HomeScreenButton}
-                onPress={() => navigate('SetRoom', { room: 'Dinner room' })}
-              >
-                <Icons number={5} style={labStyle.HomeIcon} size={80} />
-                {/* <UtensilsCrossed style={labStyle.HomeIcon} size={80} /> */}
-                <Text style={labStyle.HomeScreenButton_Text}>Dinner room</Text>
-              </Pressable>
-              <Pressable
-                style={labStyle.HomeScreenButton}
-                onPress={() => navigate('SetRoom', { room: 'Office' })}
-              >
-                <Icons number={6} style={labStyle.HomeIcon} size={80} />
-                {/* <Laptop style={labStyle.HomeIcon} size={80} /> */}
-                <Text style={labStyle.HomeScreenButton_Text}>Office</Text>
-              </Pressable>
-              <Pressable
-                style={labStyle.HomeScreenAddButton}
-                onPress={() => navigate('AddRoomScreen')}
-              >
-                <PlusIcon style={labStyle.HomeAddIcon} size={80} />
-              </Pressable>
+              <FlatList
+                data={roomArray}
+                numColumns={2}
+                renderItem={({ item }) => (
+                  <>
+                    {/* <View>{GetRooms(item)}</View> */}
+                    <Pressable
+                      style={labStyle.HomeScreenButton}
+                      onPress={() => {
+                        navigate('SetRoom', { room: item })
+                      }}
+                    >
+                      <Icons icon={item} style={labStyle.HomeIcon} size={80} />
+                      {/* <BedDouble style={labStyle.HomeIcon} size={80} /> */}
+                      <Text style={labStyle.HomeScreenButton_Text}>{item}</Text>
+                    </Pressable>
+                  </>
+                )}
+              />
             </View>
+            <Pressable style={labStyle.HomeScreenButtonEmpty}></Pressable>
           </ScrollView>
+          <Pressable
+            style={labStyle.HomeScreenAddButton}
+            onPress={() => {
+              navigate('AddRoomScreen', { roomArray: roomArray })
+            }}
+          >
+            <PlusIcon style={labStyle.HomeAddIcon} size={80} />
+          </Pressable>
         </View>
       </View>
     </>

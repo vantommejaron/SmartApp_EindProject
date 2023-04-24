@@ -10,7 +10,9 @@ import {
 import { lab, lab as labStyle } from '../../styles/lab'
 
 import { useState } from 'react'
-export default () => {
+import AsyncStorage from '@react-native-async-storage/async-storage'
+export default (roomName: any) => {
+  const room = roomName.roomName
   const [value, setValue] = useState(17)
   // TODO: Moet kijken naar de JSON om te checken of de toggle aan of uit staat
   const [checkToggle1, setcheckToggle1] = useState(true)
@@ -21,7 +23,7 @@ export default () => {
   }
   if (checkToggle1) {
     // TODO: Send to database!!
-    console.log('HeatingSwitch is on')
+    AsyncStorage.mergeItem(room, JSON.stringify({ HeatingState: true }))
     return (
       <>
         <Switch
@@ -57,19 +59,28 @@ export default () => {
     )
   }
   if (!checkToggle1) {
+      AsyncStorage.mergeItem(room, JSON.stringify({ HeatingState: false }))
     return (
-      // TODO: Send to database!!
-      console.log('HeatingSwitch is off'),
-      <Switch
-        style={labStyle.toggleSwitch}
-        trackColor={{ false: '#767577', true: '#007AFF' }}
-        // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
-        // ios_backgroundColor="#3e3e3e"
-        onValueChange={() => {
-          setcheckToggle1(!checkToggle1)
-        }}
-        value={checkToggle1}
-      />
+      (
+        <>
+          <Switch
+            style={labStyle.toggleSwitch}
+            trackColor={{ false: '#767577', true: '#007AFF' }}
+            // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
+            // ios_backgroundColor="#3e3e3e"
+            onValueChange={() => {
+              setcheckToggle1(!checkToggle1)
+            }}
+            value={checkToggle1}
+          />
+          <View style={labStyle.containerDeviceOff}>
+            <Text style={labStyle.TitleDeviceOff}>Heating device is off</Text>
+            <Text style={labStyle.DescriptionDeviceOff}>
+              Press button to activate heater
+            </Text>
+          </View>
+        </>
+      )
     )
   }
 }

@@ -6,24 +6,24 @@ import { ParamListBase } from '@react-navigation/native'
 import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import { View } from 'lucide-react'
+import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export const Heating = ({
-  heatingBrand,
-  heatingName,
+export const LampDevice = ({
+  lightName,
+  lightBrand,
   roomName,
 }: {
-  heatingBrand: string
-  heatingName: string
+  lightName: string
+  lightBrand: string
   roomName: string
 }) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
-
   const SendToLocalStorage = () => {
     let data = {
-      heatingBrand: heatingBrand,
-      heatingName: heatingName,
+      lightBrand: lightBrand,
+      lightName: lightName,
     }
     AsyncStorage.mergeItem(roomName, JSON.stringify(data))
     AsyncStorage.getItem(roomName).then(value => {
@@ -33,7 +33,7 @@ export const Heating = ({
   return (
     <>
       <Ionicons
-        name="flame-outline"
+        name="bulb-outline"
         size={60}
         color={'white'}
         style={labStyle.Choose_LightBulb}
@@ -41,14 +41,12 @@ export const Heating = ({
       <Pressable
         style={[labStyle.button_light, labStyle.Choose_LightBulb_Box]}
         onPress={() => {
-          navigate('ChooseCooling', { room: roomName })
+          navigate('SetRoom', { room: roomName })
           SendToLocalStorage()
         }}
       >
-        <Text style={labStyle.Heating_title}>Hama</Text>
-        <Text style={labStyle.Heating_description}>
-          Bluetooth lightbulb E27
-        </Text>
+        <Text style={labStyle.Light_title}>{lightBrand}</Text>
+        <Text style={labStyle.Light_description}>{lightName}</Text>
       </Pressable>
     </>
   )

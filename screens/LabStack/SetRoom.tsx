@@ -24,12 +24,14 @@ import { ColorPicker } from 'react-native-color-picker'
 import { Picker } from '../../assets/components/ColorPicker'
 import CircleSlider from '../../assets/components/CircleSlider'
 import Slider from '../../assets/components/Slider'
-import CoolingDevice from '../../assets/components/CoolingDevice'
+import Cooler from '../../assets/components/Cooler'
 import {
   Lightbulb,
   ThermometerSun,
   ThermometerSnowflake,
 } from 'lucide-react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import SelectDevice from './SelectDevice'
 
 // import { Device } from '../../assets/components/Device'
 type DeviceProps = {
@@ -37,52 +39,155 @@ type DeviceProps = {
   device2: boolean
   device3: boolean
   switchState: boolean
+  room: string
 }
+const lightDeviceSelected = false
 
-const Device = ({ device1, device2, device3, switchState }: DeviceProps) => {
+const Device = ({
+  device1,
+  device2,
+  device3,
+  switchState,
+  room,
+}: DeviceProps) => {
+  const [lightDeviceSelected, setLightDeviceSelected] = useState(false)
+  const [heatingDeviceSelected, setHeatingDeviceSelected] = useState(false)
+  const [coolingDeviceSelected, setcoolingDeviceSelected] = useState(false)
+  const [lightState, setLightState] = useState(false)
+  const { navigate, goBack } =
+    useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+
+  AsyncStorage.getItem(room).then(value => {
+    if (value != null) {
+      const lightData = JSON.parse(value).lightName
+      const heatingData = JSON.parse(value).heatingName
+      const coolingData = JSON.parse(value).coolingName
+      setLightState(JSON.parse(value).LightState)
+      console.log("LIGHTS: " + lightState)
+      if (!device1) {
+        if (lightData != '') {
+          setLightDeviceSelected(true)
+        } else {
+          setLightDeviceSelected(false)
+        }
+      }
+      if (!device2) {
+        if (heatingData != '') {
+          setHeatingDeviceSelected(true)
+        } else {
+          setHeatingDeviceSelected(false)
+        }
+      }
+      if (!device3) {
+        if (coolingData != '') {
+          setcoolingDeviceSelected(true)
+        } else {
+          setcoolingDeviceSelected(false)
+        }
+      }
+    }
+  })
+
   if (!device1) {
-    // TODO: Add LIGHT BULB
-    // TODO: READ JSON AND CHECK IF THERE IS A DEVICE, MAKE IF STATEMENT
-    if (switchState == true) {
+    if (lightDeviceSelected) {
+      if (switchState == true) {
+        return (
+          <>
+            <Picker roomName={room} state={lightState} type="light" />
+          </>
+        )
+      }
+      if (switchState == false) {
+        return <>{/* <Picker/> */}</>
+      }
+    } else {
       return (
         <>
-          <Picker />
+          <Text style={labStyle.DeviceSelectedTitle}>
+            There is no device selected
+          </Text>
+          <Pressable
+            style={labStyle.DeviceSelectedButton}
+            onPress={() => {
+              navigate('SelectDevice', { room: room, type: 'light' })
+            }}
+          >
+            <Text style={labStyle.DeviceSelectedButtonText}>
+              Select a device
+            </Text>
+          </Pressable>
         </>
       )
-    }
-    if (switchState == false) {
-      return <>{/* <Slider/> */}</>
     }
   }
   if (device3) {
-    // TODO: Add ThermometerSun
-    // TODO: READ JSON AND CHECK IF THERE IS A DEVICE, MAKE IF STATEMENT
-    if (switchState == true) {
+    if (heatingDeviceSelected) {
+      if (switchState == true) {
+        return (
+          <>
+            <Slider roomName={room} />
+          </>
+        )
+      }
+      if (switchState == false) {
+        return <>{/* <Slider/> */}</>
+      }
+    } else {
       return (
         <>
-          <Slider />
+          <Text style={labStyle.DeviceSelectedTitle}>
+            There is no device selected
+          </Text>
+          <Pressable
+            style={labStyle.DeviceSelectedButton}
+            onPress={() => {
+              navigate('SelectDevice', { room: room, type: 'heating' })
+            }}
+          >
+            <Text style={labStyle.DeviceSelectedButtonText}>
+              Select a device
+            </Text>
+          </Pressable>
         </>
       )
     }
-    if (switchState == false) {
-      return <>{/* <Slider/> */}</>
-    }
   }
   if (device2) {
-    // TODO: Add ThermometerSnowflake
-    // TODO: READ JSON AND CHECK IF THERE IS A DEVICE, MAKE IF STATEMENT
-    if (switchState == true) {
+    if (coolingDeviceSelected) {
+      // TODO: Add ThermometerSnowflake
+      // TODO: READ JSON AND CHECK IF THERE IS A DEVICE, MAKE IF STATEMENT
+      if (switchState == true) {
+        return (
+          // TODO: Zet om naar een component
+          <Cooler roomName={room} />
+        )
+      }
+      if (switchState == false) {
+        return <>{/* <Slider/> */}</>
+      }
+    } else {
       return (
-        // TODO: Zet om naar een component
-        <CoolingDevice />
+        <>
+          <Text style={labStyle.DeviceSelectedTitle}>
+            There is no device selected
+          </Text>
+          <Pressable
+            style={labStyle.DeviceSelectedButton}
+            onPress={() => {
+              navigate('SelectDevice', { room: room, type: 'cooling' })
+            }}
+          >
+            <Text style={labStyle.DeviceSelectedButtonText}>
+              Select a device
+            </Text>
+          </Pressable>
+        </>
       )
-    }
-    if (switchState == false) {
-      return <>{/* <Slider/> */}</>
     }
   }
 }
 export default (room: any) => {
+  const roomName = room.route.params.room
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   console.log(room.route.params.room)
@@ -101,6 +206,7 @@ export default (room: any) => {
   return (
     <>
       <View style={labStyle.background}>
+        {/* ----------------------------------- HEADER (begin) ----------------------------------- */}
         <View style={labStyle.SetRoomBackContainer}>
           <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
             <Ionicons
@@ -114,9 +220,11 @@ export default (room: any) => {
             {room.route.params.room}
           </Text>
         </View>
+        {/* ----------------------------------- HEADER (einde) ----------------------------------- */}
         <Pressable style={labStyle.SetRoomDeivceName}>
           <Text style={labStyle.button_onboarding_text}>{typeDevice}</Text>
         </Pressable>
+        {/* ---------------------------------- OPTIONS DEVICES (begin) ----------------------------------- */}
         <View style={labStyle.SetRoomDeviceContainer}>
           <Pressable
             style={[
@@ -178,14 +286,18 @@ export default (room: any) => {
         <Text style={labStyle.chooseDeviceText}>
           LIGHTS ㅤㅤㅤ HEATING ㅤㅤㅤ COOLING
         </Text>
+        {/* ---------------------------------- OPTIONS DEVICES (einde) ----------------------------------- */}
+        {/* -------------------------------------- DEVICES (begin) --------------------------------------- */}
         <View style={labStyle.DeviceContainer}>
           <Device
             device1={check1}
             device2={check2}
             device3={check3}
             switchState={checkToggle1}
+            room={roomName}
           />
         </View>
+        {/* -------------------------------------- DEVICES (einde) --------------------------------------- */}
 
         {/* <View style={labStyle.toggleSwitch}>
           <Switch

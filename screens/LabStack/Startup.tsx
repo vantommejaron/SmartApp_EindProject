@@ -9,6 +9,8 @@ import Welcome from './Welcome'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { LabStack } from '.'
+import React from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 
@@ -17,7 +19,21 @@ import { LabStack } from '.'
 
 export default () => {
     const { navigate} = useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+    const [state, setState] = React.useState(true)
+    AsyncStorage.getItem("Settings").then(value => {
+      if (value != null) {
+        let data = JSON.parse(value)
+        if (data.setupState == true) {
+          setState(true)
+        }
+        else {
+          setState(false)
+        }
+      }
+    })
+    console.log(state)
 
+  if (state) {
   return (
     <>
       <View style={[labStyle.background, labStyle.container]}>
@@ -32,4 +48,24 @@ export default () => {
       </View>
     </>
   )
+  } else
+  {
+    return (
+      <>
+        <View style={[labStyle.background, labStyle.container]}>
+          <Ionicons name="home-outline" size={200} color={'white'} />
+          <Text style={labStyle.Logo}>SMART HOME</Text>
+          <Pressable
+            style={labStyle.button}
+            onPress={() => {
+              navigate('HomeScreen', { rooms: []})
+
+            }}
+          >
+            <AntDesign name="rightcircleo" size={70} color="white" />
+          </Pressable>
+        </View>
+      </>
+    )
+  }
 }

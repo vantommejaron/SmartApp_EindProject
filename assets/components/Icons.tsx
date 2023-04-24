@@ -8,57 +8,57 @@ import {
   CarIcon, 
   Gamepad2,
 } from 'lucide-react-native'
-export default ({number, style, size}:{number:any, style:any, size:any}) => {
-    if (number == 1) {
-        return (
-            <>
-                <BedDouble style={style} size={size}/>
-            </>
-        )
+export default ({icon, style, size}:{icon:any, style:any, size:any}) => {
+    if (icon == 'BedRoom') {
+      return (
+        <>
+          <BedDouble style={style} size={size} />
+        </>
+      )
     }
-    if (number == 2) {
+    if (icon == 'LivingRoom') {
       return (
         <>
           <Sofa style={style} size={size} />
         </>
       )
     }
-    if (number == 3) {
+    if (icon == 'Kitchen') {
         return (
           <>
             <Microwave style={style} size={size} />
           </>
         )
     }
-    if (number == 4) {
+    if (icon == 'BathRoom') {
         return (
           <>
             <Bath style={style} size={size} />
           </>
         )
     }
-    if (number == 5) {
+    if (icon == 'DinnerRoom') {
         return (
           <>
             <UtensilsCrossed style={style} size={size} />
           </>
         )
     }
-    if (number == 6) {
+    if (icon == 'Office') {
         return (
           <>
             <Laptop style={style} size={size} />
           </>
         )
     }
-    if (number == 7) {
+    if (icon == 'Car') {
         return (
           <>
             <CarIcon style={style} size={size} />
           </>
         )
     }
-    if (number == 8) {
+    if (icon == 'Gamepad') {
         return (
           <>
             <Gamepad2 style={style} size={size} />

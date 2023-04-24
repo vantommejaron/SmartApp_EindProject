@@ -19,14 +19,28 @@ import React, { useState } from 'react'
 import { CheckBox } from '@rneui/themed'
 import Svg, { Circle, Rect } from 'react-native-svg'
 import { Heating } from '../../assets/components/Heating'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 type CheckboxComponentProps = {}
 
-export default () => {
+export default (room:any) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const [isSelected, setSelection] = useState(false)
   const [check1, setCheck1] = useState(false)
+  const roomName = room.route.params.room
+  console.log(roomName)
+
+  const SendToLocalStorage = () => {
+    let data = {
+      heatingBrand: '',
+      heatingName: '',
+    }
+    AsyncStorage.mergeItem(roomName, JSON.stringify(data))
+    AsyncStorage.getItem(roomName).then(value => {
+      console.log(value)
+    })
+  }
   return (
     <>
       <View style={labStyle.background}>
@@ -43,16 +57,24 @@ export default () => {
             Choose a light device you want to connect
           </Text>
           <ScrollView>
-            <Heating brand="Hama" name="Bluetooth heater E27"/>
-            <Heating brand="Hama" name="Bluetooth heater E27"/>
-            <Heating brand="Hama" name="Bluetooth heater E27"/>
-            <Heating brand="Hama" name="Bluetooth heater E27"/>
-            <Heating brand="Hama" name="Bluetooth heater E27"/>
-            <Heating brand="Hama" name="Bluetooth heater E27"/>
-            <Heating brand="Hama" name="Bluetooth heater E27"/>
-            <Heating brand="Hama" name="Bluetooth heater E27"/>
-            
+            <Heating heatingBrand="Hama" heatingName="Bluetooth heater E27" roomName={roomName} />
+            <Heating heatingBrand="Hama" heatingName="Bluetooth heater E27" roomName={roomName} />
+            <Heating heatingBrand="Hama" heatingName="Bluetooth heater E27" roomName={roomName} />
+            <Heating heatingBrand="Hama" heatingName="Bluetooth heater E27" roomName={roomName} />
+            <Heating heatingBrand="Hama" heatingName="Bluetooth heater E27" roomName={roomName} />
+            <Heating heatingBrand="Hama" heatingName="Bluetooth heater E27" roomName={roomName} />
+            <Heating heatingBrand="Hama" heatingName="Bluetooth heater E27" roomName={roomName} />
+            <Heating heatingBrand="Hama" heatingName="Bluetooth heater E27" roomName={roomName} />
           </ScrollView>
+          <Pressable
+            onPress={() => {
+              navigate('ChooseCooling', { room: roomName,
+              })
+              SendToLocalStorage()
+            }}
+          >
+            <Text style={labStyle.skipButton}>SKIP</Text>
+          </Pressable>
         </View>
       </View>
     </>

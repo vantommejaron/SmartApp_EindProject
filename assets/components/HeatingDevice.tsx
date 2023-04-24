@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { View } from 'lucide-react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export const Heating = ({
+export const HeatingDevice = ({
   heatingBrand,
   heatingName,
   roomName,
@@ -41,7 +41,7 @@ export const Heating = ({
       <Pressable
         style={[labStyle.button_light, labStyle.Choose_LightBulb_Box]}
         onPress={() => {
-          navigate('ChooseCooling', { room: roomName })
+          navigate('SetRoom', { room: roomName })
           SendToLocalStorage()
         }}
       >

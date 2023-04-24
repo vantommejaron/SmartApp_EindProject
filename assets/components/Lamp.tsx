@@ -7,13 +7,20 @@ import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import { View } from 'lucide-react'
 import { useState } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export const Lamp = ({name, brand} :{name:string, brand:string}) => {
+export const Lamp = ({lightName, lightBrand, roomName} :{lightName:string, lightBrand:string, roomName:string}) => {
     const { navigate, goBack } =
       useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
-      const SendLight = () => {
-        // TODO: Send to database!!
-        console.log(`'brand: ' + ${brand} + ' name: ' + ${name}'`)
+      const SendToLocalStorage = () => {
+        let data = {
+          lightBrand: lightBrand,
+          lightName: lightName,
+        }
+        AsyncStorage.mergeItem(roomName, JSON.stringify(data))
+        AsyncStorage.getItem(roomName).then(value => {
+          console.log(value)
+        })
       }
     return (
       <>
@@ -26,12 +33,12 @@ export const Lamp = ({name, brand} :{name:string, brand:string}) => {
         <Pressable
           style={[labStyle.button_light, labStyle.Choose_LightBulb_Box]}
           onPress={() => {
-            navigate('ChooseHeating')
-            SendLight()
+            navigate('ChooseHeating', { room: roomName })
+            SendToLocalStorage()
           }}
         >
-          <Text style={labStyle.Light_title}>{brand}</Text>
-          <Text style={labStyle.Light_description}>{name}</Text>
+          <Text style={labStyle.Light_title}>{lightBrand}</Text>
+          <Text style={labStyle.Light_description}>{lightName}</Text>
         </Pressable>
       </>
     )

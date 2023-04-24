@@ -10,9 +10,6 @@ import { Svg, Path } from 'react-native-svg'
 import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons' 
 
-
-
-
 export default () => {
     const { navigate, goBack } = useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
 
