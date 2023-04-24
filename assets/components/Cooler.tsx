@@ -25,8 +25,9 @@ import CircleSlider from './CircleSlider'
 import Slider from './Slider'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export default (roomName:any) => {
+export default (roomName:any, state: any) => {
   const room = roomName.roomName
+  const toggleState = roomName.state
   const [coolingValue, setCoolingValue] = useState(0)
   const SetCoolingValueDown = () => {
     if (coolingValue > 0) {
@@ -38,7 +39,7 @@ export default (roomName:any) => {
       setCoolingValue(coolingValue + 1)
     }
   }
-  const [checkToggle1, setcheckToggle1] = useState(true)
+  const [checkToggle1, setcheckToggle1] = useState(toggleState)
   const SetCooling = () => {
     const Cooling = coolingValue
     // TODO: Send to database!!

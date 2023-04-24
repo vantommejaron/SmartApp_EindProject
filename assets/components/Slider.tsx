@@ -11,11 +11,12 @@ import { lab, lab as labStyle } from '../../styles/lab'
 
 import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-export default (roomName: any) => {
+export default (roomName: any, state: any) => {
   const room = roomName.roomName
+  const toggleState = roomName.state
   const [value, setValue] = useState(17)
   // TODO: Moet kijken naar de JSON om te checken of de toggle aan of uit staat
-  const [checkToggle1, setcheckToggle1] = useState(true)
+  const [checkToggle1, setcheckToggle1] = useState(toggleState)
   const SetHeating = () => {
     const Temperature = value
     // TODO: Send to database!!
@@ -59,28 +60,26 @@ export default (roomName: any) => {
     )
   }
   if (!checkToggle1) {
-      AsyncStorage.mergeItem(room, JSON.stringify({ HeatingState: false }))
+    AsyncStorage.mergeItem(room, JSON.stringify({ HeatingState: false }))
     return (
-      (
-        <>
-          <Switch
-            style={labStyle.toggleSwitch}
-            trackColor={{ false: '#767577', true: '#007AFF' }}
-            // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
-            // ios_backgroundColor="#3e3e3e"
-            onValueChange={() => {
-              setcheckToggle1(!checkToggle1)
-            }}
-            value={checkToggle1}
-          />
-          <View style={labStyle.containerDeviceOff}>
-            <Text style={labStyle.TitleDeviceOff}>Heating device is off</Text>
-            <Text style={labStyle.DescriptionDeviceOff}>
-              Press button to activate heater
-            </Text>
-          </View>
-        </>
-      )
+      <>
+        <Switch
+          style={labStyle.toggleSwitch}
+          trackColor={{ false: '#767577', true: '#007AFF' }}
+          // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
+          // ios_backgroundColor="#3e3e3e"
+          onValueChange={() => {
+            setcheckToggle1(!checkToggle1)
+          }}
+          value={checkToggle1}
+        />
+        <View style={labStyle.containerDeviceOff}>
+          <Text style={labStyle.TitleDeviceOff}>Heating device is off</Text>
+          <Text style={labStyle.DescriptionDeviceOff}>
+            Press button to activate heater
+          </Text>
+        </View>
+      </>
     )
   }
 }

@@ -54,6 +54,8 @@ const Device = ({
   const [heatingDeviceSelected, setHeatingDeviceSelected] = useState(false)
   const [coolingDeviceSelected, setcoolingDeviceSelected] = useState(false)
   const [lightState, setLightState] = useState(false)
+  const [heatingState, setHeatingState] = useState(false)
+  const [coolingState, setCoolingState] = useState(false)
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
 
@@ -63,6 +65,8 @@ const Device = ({
       const heatingData = JSON.parse(value).heatingName
       const coolingData = JSON.parse(value).coolingName
       setLightState(JSON.parse(value).LightState)
+      setHeatingState(JSON.parse(value).HeatingState)
+      setCoolingState(JSON.parse(value).CoolingState)
       console.log("LIGHTS: " + lightState)
       if (!device1) {
         if (lightData != '') {
@@ -125,7 +129,7 @@ const Device = ({
       if (switchState == true) {
         return (
           <>
-            <Slider roomName={room} />
+            <Slider roomName={room} state={heatingState} />
           </>
         )
       }
@@ -159,7 +163,7 @@ const Device = ({
       if (switchState == true) {
         return (
           // TODO: Zet om naar een component
-          <Cooler roomName={room} />
+          <Cooler roomName={room} state={coolingState} />
         )
       }
       if (switchState == false) {
