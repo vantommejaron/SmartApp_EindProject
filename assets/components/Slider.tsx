@@ -11,16 +11,17 @@ import { lab, lab as labStyle } from '../../styles/lab'
 
 import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-export default (roomName: any, state: any) => {
+export default (roomName: any, state: any, temperature: any) => {
   const room = roomName.roomName
   const toggleState = roomName.state
-  const [value, setValue] = useState(17)
+  const heatingTemperature = roomName.temperature
+  const [value, setValue] = useState(heatingTemperature? heatingTemperature : 18)
   // TODO: Moet kijken naar de JSON om te checken of de toggle aan of uit staat
   const [checkToggle1, setcheckToggle1] = useState(toggleState)
   const SetHeating = () => {
     const Temperature = value
     // TODO: Send to database!!
-    console.log('Temperature: ' + Temperature)
+    AsyncStorage.mergeItem(room, JSON.stringify({ Temperature: Temperature }))
   }
   if (checkToggle1) {
     // TODO: Send to database!!

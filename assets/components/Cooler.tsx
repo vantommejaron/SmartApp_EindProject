@@ -25,10 +25,11 @@ import CircleSlider from './CircleSlider'
 import Slider from './Slider'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export default (roomName:any, state: any) => {
+export default (roomName: any, state: any, coolingSpeed: any) => {
   const room = roomName.roomName
   const toggleState = roomName.state
-  const [coolingValue, setCoolingValue] = useState(0)
+  const coolingState = roomName.coolingSpeed
+  const [coolingValue, setCoolingValue] = useState(coolingState? coolingState : 0)
   const SetCoolingValueDown = () => {
     if (coolingValue > 0) {
       setCoolingValue(coolingValue - 1)
@@ -43,7 +44,7 @@ export default (roomName:any, state: any) => {
   const SetCooling = () => {
     const Cooling = coolingValue
     // TODO: Send to database!!
-    console.log('Cooling: ' + Cooling)
+    AsyncStorage.mergeItem(room, JSON.stringify({ Cooling: Cooling }))
   }
   if (checkToggle1) {
     // TODO: Send to database!!

@@ -56,34 +56,53 @@ const Device = ({
   const [lightState, setLightState] = useState(false)
   const [heatingState, setHeatingState] = useState(false)
   const [coolingState, setCoolingState] = useState(false)
+  const [lightBrightness, setLightBrightness] = useState(0)
+  const [lightColor, setLightColor] = useState('#FF0000')
+  const [heatingTemperature, setHeatingTemperature] = useState(18)
+  const [coolingSpeed, setCoolingSpeed] = useState(0)
+
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
 
   AsyncStorage.getItem(room).then(value => {
     if (value != null) {
-      const lightData = JSON.parse(value).lightName
-      const heatingData = JSON.parse(value).heatingName
-      const coolingData = JSON.parse(value).coolingName
+      const lightName = JSON.parse(value).lightName
+      const heatingName = JSON.parse(value).heatingName
+      const coolingName = JSON.parse(value).coolingName
+
+      const lightBrightness = JSON.parse(value).Brightness
+      const lightColor = JSON.parse(value).Color
+      const heatingTemperature = JSON.parse(value).Temperature
+      const coolingSpeed = JSON.parse(value).Cooling
       setLightState(JSON.parse(value).LightState)
       setHeatingState(JSON.parse(value).HeatingState)
       setCoolingState(JSON.parse(value).CoolingState)
+      setLightBrightness(lightBrightness)
+      setLightColor(lightColor)
+      setHeatingTemperature(heatingTemperature)
+      setCoolingSpeed(coolingSpeed)
+      console.log("______________________")
+      console.log(value)
+      console.log(lightColor)
+      console.log("______________________")
+
       console.log("LIGHTS: " + lightState)
       if (!device1) {
-        if (lightData != '') {
+        if (lightName != '') {
           setLightDeviceSelected(true)
         } else {
           setLightDeviceSelected(false)
         }
       }
       if (!device2) {
-        if (heatingData != '') {
+        if (heatingName != '') {
           setHeatingDeviceSelected(true)
         } else {
           setHeatingDeviceSelected(false)
         }
       }
       if (!device3) {
-        if (coolingData != '') {
+        if (coolingName != '') {
           setcoolingDeviceSelected(true)
         } else {
           setcoolingDeviceSelected(false)
@@ -97,7 +116,13 @@ const Device = ({
       if (switchState == true) {
         return (
           <>
-            <Picker roomName={room} state={lightState} type="light" />
+            <Picker
+              roomName={room}
+              state={lightState}
+              brightness={lightBrightness}
+              color={lightColor}
+              type="light"
+            />
           </>
         )
       }
@@ -129,7 +154,7 @@ const Device = ({
       if (switchState == true) {
         return (
           <>
-            <Slider roomName={room} state={heatingState} />
+            <Slider roomName={room} state={heatingState} temperature={heatingTemperature} />
           </>
         )
       }
@@ -163,7 +188,11 @@ const Device = ({
       if (switchState == true) {
         return (
           // TODO: Zet om naar een component
-          <Cooler roomName={room} state={coolingState} />
+          <Cooler
+            roomName={room}
+            state={coolingState}
+            coolingSpeed={coolingSpeed}
+          />
         )
       }
       if (switchState == false) {

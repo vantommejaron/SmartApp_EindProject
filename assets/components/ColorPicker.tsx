@@ -9,9 +9,15 @@ import { toHsv, fromHsv } from 'react-native-color-picker'
 import { LabStack } from '../../screens/LabStack'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export const Picker = (roomName: any, state:any) => {
+export const Picker = (roomName: any, state: any, brightness: any, color: any) => {
   const room = roomName.roomName
   const toggleState = roomName.state
+  const lightBrightness = roomName.brightness
+  const lightColor = roomName.color
+  console.log('-----------------------------------')
+  console.log(lightBrightness)
+  console.log(lightColor)
+  console.log('-----------------------------------')
   const [checkToggle1, setcheckToggle1] = useState(toggleState)
   const getData = async () => {
     AsyncStorage.getItem(room).then(value => {
@@ -24,13 +30,13 @@ export const Picker = (roomName: any, state:any) => {
   console.log(getData())
   console.log(room)
 
-  const [colorValue, setColorValue] = useState('#FF0000')
-  const [value, setValue] = useState(100)
+  const [colorValue, setColorValue] = useState(lightColor? lightColor : '#FF0000')
+  const [value, setValue] = useState(lightBrightness? lightBrightness : 0)
   const SetLights = () => {
     const Brightness = value
     const Color = colorValue
     // TODO: Send to database!!
-    console.log('brightness: ' + Brightness + ' color: ' + Color)
+    AsyncStorage.mergeItem(room, JSON.stringify({ Brightness: Brightness, Color: Color }))
   }
 
   if (checkToggle1) {
@@ -54,6 +60,7 @@ export const Picker = (roomName: any, state:any) => {
           // onColorChange={color => console.log(`Color selected: ${color}`)}
           style={{ flex: 1 }}
           hideSliders
+          color={colorValue}
         />
         <View style={labStyle.containerSlider}>
           <Text style={labStyle.sliderTextLights}>Brightness: {value}%</Text>
