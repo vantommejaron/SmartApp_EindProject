@@ -110,7 +110,8 @@ export const lab = StyleSheet.create({
         marginTop: 30,
         fontSize: 25,
         color: colors.title, 
-        marginLeft: -100,
+        marginRight: 30,
+        // marginLeft: -100,
     },
     containerLight: {
         flex: 1,
@@ -383,6 +384,21 @@ export const lab = StyleSheet.create({
         marginTop: 10,
         color: colors.background,
     },
+    DeviceIcon: {
+        marginTop: 10,
+        color: colors.background,
+    },
+    DeleteButton: {
+        marginTop: -40,
+        marginBottom: 35,
+        marginLeft: 'auto',
+        marginRight: 40,
+    },
+    DeleteIcon: {
+        color: colors.background,
+        marginRight: 10,
+    },
+    
     // HomeAddIcon: {
     //     marginTop: 5,
     //     color: colors.title,
@@ -593,6 +609,21 @@ export const lab = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: 10,
         marginLeft: 0,
+    },
+    NoRoomTitle: {
+        color: colors.title,
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 60,
+        marginLeft: 0,
+    },
+    NoRoomDescription: {
+        color: colors.description,
+        fontSize: 15,
+        fontWeight: 'bold',
+        marginTop: 10,
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     DeviceSelectedTitle: {
         color: colors.title,

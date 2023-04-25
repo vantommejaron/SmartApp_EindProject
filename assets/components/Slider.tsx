@@ -8,6 +8,7 @@ import {
   Switch,
 } from 'react-native'
 import { lab, lab as labStyle } from '../../styles/lab'
+import * as Haptics from 'expo-haptics'
 
 import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -53,6 +54,7 @@ export default (roomName: any, state: any, temperature: any) => {
           style={labStyle.buttonColorPicker}
           onPress={() => {
             SetHeating()
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
           }}
         >
           <Text style={labStyle.buttonColorPickerText}>Set</Text>

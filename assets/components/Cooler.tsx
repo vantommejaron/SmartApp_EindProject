@@ -24,6 +24,7 @@ import { Picker } from './ColorPicker'
 import CircleSlider from './CircleSlider'
 import Slider from './Slider'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Haptics from 'expo-haptics'
 
 export default (roomName: any, state: any, coolingSpeed: any) => {
   const room = roomName.roomName
@@ -84,6 +85,7 @@ export default (roomName: any, state: any, coolingSpeed: any) => {
           style={labStyle.buttonColorPicker}
           onPress={() => {
             SetCooling()
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
           }}
         >
           <Text style={labStyle.buttonColorPickerText}>Set</Text>

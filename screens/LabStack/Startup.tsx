@@ -31,7 +31,6 @@ export default () => {
         }
       }
     })
-    console.log(state)
 
   if (state) {
   return (
@@ -58,7 +57,7 @@ export default () => {
           <Pressable
             style={labStyle.button}
             onPress={() => {
-              navigate('HomeScreen', { rooms: []})
+              navigate('HomeScreen', { room: '' })
 
             }}
           >

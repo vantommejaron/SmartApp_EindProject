@@ -19,7 +19,7 @@ import { Ionicons } from '@expo/vector-icons'
 import React, { useState } from 'react'
 import type { PropsWithChildren } from 'react'
 import { LabStack } from '.'
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity, Alert } from 'react-native'
 import { ColorPicker } from 'react-native-color-picker'
 import { Picker } from '../../assets/components/ColorPicker'
 import CircleSlider from '../../assets/components/CircleSlider'
@@ -32,6 +32,7 @@ import {
 } from 'lucide-react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import SelectDevice from './SelectDevice'
+import Icons from '../../assets/components/Icons'
 
 // import { Device } from '../../assets/components/Device'
 type DeviceProps = {
@@ -81,12 +82,12 @@ const Device = ({
       setLightColor(lightColor)
       setHeatingTemperature(heatingTemperature)
       setCoolingSpeed(coolingSpeed)
-      console.log("______________________")
+      console.log('______________________')
       console.log(value)
       console.log(lightColor)
-      console.log("______________________")
+      console.log('______________________')
 
-      console.log("LIGHTS: " + lightState)
+      console.log('LIGHTS: ' + lightState)
       if (!device1) {
         if (lightName != '') {
           setLightDeviceSelected(true)
@@ -154,7 +155,11 @@ const Device = ({
       if (switchState == true) {
         return (
           <>
-            <Slider roomName={room} state={heatingState} temperature={heatingTemperature} />
+            <Slider
+              roomName={room}
+              state={heatingState}
+              temperature={heatingTemperature}
+            />
           </>
         )
       }
@@ -235,6 +240,24 @@ export default (room: any) => {
     // TODO: Send data to JSON (color off)
     console.log('Zet het kleur af')
   }
+  const deleteRoom = () => {
+    Alert.alert('Delete Room', 'Are you sure you want to delete this room.', [
+      {
+        text: 'NO',
+        onPress: () => console.log('NO Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'YES',
+        onPress: () => {
+          navigate('HomeScreen', { room: '' })
+          AsyncStorage.removeItem(roomName)
+          
+        },
+        style: 'default',
+      },
+    ])
+  }
 
   return (
     <>
@@ -257,6 +280,13 @@ export default (room: any) => {
         <Pressable style={labStyle.SetRoomDeivceName}>
           <Text style={labStyle.button_onboarding_text}>{typeDevice}</Text>
         </Pressable>
+        <Pressable
+          onPress={() => {
+            deleteRoom()
+          }}
+        >
+          <Icons icon="Delete" size={30} style={labStyle.DeleteButton} />
+        </Pressable>
         {/* ---------------------------------- OPTIONS DEVICES (begin) ----------------------------------- */}
         <View style={labStyle.SetRoomDeviceContainer}>
           <Pressable
@@ -273,7 +303,7 @@ export default (room: any) => {
             }}
           >
             <Lightbulb
-              style={[check1 ? labStyle.HomeIcon : labStyle.HomeIconSelected]}
+              style={[check1 ? labStyle.DeviceIcon : labStyle.HomeIconSelected]}
               size={35}
             />
           </Pressable>
@@ -292,7 +322,7 @@ export default (room: any) => {
             }}
           >
             <ThermometerSun
-              style={[check2 ? labStyle.HomeIcon : labStyle.HomeIconSelected]}
+              style={[check2 ? labStyle.DeviceIcon : labStyle.HomeIconSelected]}
               size={35}
             />
           </Pressable>
@@ -311,7 +341,7 @@ export default (room: any) => {
             }}
           >
             <ThermometerSnowflake
-              style={[check3 ? labStyle.HomeIcon : labStyle.HomeIconSelected]}
+              style={[check3 ? labStyle.DeviceIcon : labStyle.HomeIconSelected]}
               size={35}
             />
           </Pressable>

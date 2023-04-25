@@ -8,6 +8,7 @@ import { color } from '@rneui/themed/dist/config'
 import { toHsv, fromHsv } from 'react-native-color-picker'
 import { LabStack } from '../../screens/LabStack'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as Haptics from 'expo-haptics'
 
 export const Picker = (roomName: any, state: any, brightness: any, color: any) => {
   const room = roomName.roomName
@@ -79,6 +80,7 @@ export const Picker = (roomName: any, state: any, brightness: any, color: any) =
           style={labStyle.buttonColorPicker}
           onPress={() => {
             SetLights()
+             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
           }}
         >
           <Text style={labStyle.buttonColorPickerText}>Set</Text>

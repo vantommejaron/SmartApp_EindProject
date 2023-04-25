@@ -25,9 +25,9 @@ import {
 import Icons from '../../assets/components/Icons'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Room } from '../../assets/components/Room'
+// import { Room } from '../../assets/components/Room'
 
-export default (room:any) => {
+export default (room: any) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const [name, SetName] = React.useState('')
@@ -36,7 +36,7 @@ export default (room:any) => {
   })
   const [roomArray, SetRoomArray] = React.useState([])
   console.log(room.route.params.room)
-  if (room.route.params.room != undefined) {
+  if (room.route.params.room != undefined && room.route.params.room != '') {
     if (roomArray.includes(room.route.params.room) == false) {
       roomArray.push(room.route.params.room)
     }
@@ -48,6 +48,7 @@ export default (room:any) => {
       if (element != 'Settings' && roomArray.includes(element) == false) {
         roomArray.push(element)
         SetRoomArray(roomArray)
+        console.log(roomArray)
       }
     }
   })

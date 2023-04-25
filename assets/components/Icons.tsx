@@ -7,6 +7,7 @@ import {
   Laptop,
   CarIcon, 
   Gamepad2,
+  Trash2,
 } from 'lucide-react-native'
 export default ({icon, style, size}:{icon:any, style:any, size:any}) => {
     if (icon == 'BedRoom') {
@@ -51,18 +52,25 @@ export default ({icon, style, size}:{icon:any, style:any, size:any}) => {
           </>
         )
     }
-    if (icon == 'Car') {
-        return (
-          <>
-            <CarIcon style={style} size={size} />
-          </>
-        )
+    if (icon == 'Garage') {
+      return (
+        <>
+          <CarIcon style={style} size={size} />
+        </>
+      )
     }
-    if (icon == 'Gamepad') {
+    if (icon == 'GameRoom') {
+      return (
+        <>
+          <Gamepad2 style={style} size={size} />
+        </>
+      )
+    }
+    if (icon == "Delete") {
         return (
-          <>
-            <Gamepad2 style={style} size={size} />
-          </>
+            <>
+                <Trash2 style={style} size={size} />
+            </>
         )
     }
 

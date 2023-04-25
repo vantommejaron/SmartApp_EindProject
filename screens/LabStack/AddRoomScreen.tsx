@@ -22,12 +22,15 @@ import {
   CarIcon,
   Gamepad2,
 } from 'lucide-react-native'
+import { FlatList } from 'react-native-gesture-handler'
 
-export default (roomArray:any) => {
+export default (roomArray: any) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const room = roomArray.route.params.roomArray
-  console.log(room)
+  const [roomArrayNew, setRoomArrayNew] = useState([])
+  const [counter , setCounter] = useState(0)
+  const [availableRoomsArray, setAvailableRoomsArray] = useState([])
   const SendToLocalStorage = (roomName: string) => {
     let data = {
       roomName: roomName,
@@ -45,9 +48,46 @@ export default (roomArray:any) => {
     // Save data to local storage (AsyncStorage)
     AsyncStorage.setItem(roomName, JSON.stringify(data))
     AsyncStorage.getItem(roomName).then(value => {
-      console.log(value)
+      // console.log(value)
     })
   }
+
+  const addToArray = () => {
+    AsyncStorage.getAllKeys().then(keys => {
+      // console.log(keys)
+      for (let i = 0; i < keys.length; i++) {
+        const element = keys[i]
+        if (room.includes(element) == false && element != 'Settings') {
+          room.push(element)
+          setRoomArrayNew(room)
+        }
+      }
+    })
+  }
+
+  AsyncStorage.getAllKeys().then(keys => {
+    // console.log(keys)
+    var availableRooms = [
+      'BedRoom',
+      'LivingRoom',
+      'Kitchen',
+      'BathRoom',
+      'DinnerRoom',
+      'Office',
+      'Garage',
+      'GameRoom',
+    ]
+    for (let i = 0; i < keys.length; i++) {
+      const element = keys[i]
+      // console.log(element)
+      if (availableRooms.includes(element) == true) {
+        availableRooms.splice(availableRooms.indexOf(element), 1)
+      }
+    }
+    setAvailableRoomsArray(availableRooms)
+    // console.log(availableRooms)
+  })
+
   return (
     <>
       <View style={labStyle.background}>
@@ -64,60 +104,20 @@ export default (roomArray:any) => {
             Choose a room where you want to add a device
           </Text>
           <View style={labStyle.button_room}>
-            {/* BEDROOM */}
-            <Pressable
-              onPress={() => {
-                navigate('HomeScreen', { room: 'BedRoom' })
-                SendToLocalStorage('BedRoom')
-              }}
-            >
-              <Text style={labStyle.button_room_text}>→ㅤBedroom</Text>
-            </Pressable>
-            {/* Living room */}
-            <Pressable
-              onPress={() => {
-                navigate('HomeScreen', { room: 'LivingRoom' })
-                SendToLocalStorage('LivingRoom')
-              }}
-            >
-              <Text style={labStyle.button_room_text}>→ㅤLiving room</Text>
-            </Pressable>
-            {/* KITCHEN */}
-            <Pressable
-              onPress={() => {
-                navigate('HomeScreen', { room: 'Kitchen' })
-                SendToLocalStorage('Kitchen')
-              }}
-            >
-              <Text style={labStyle.button_room_text}>→ㅤKitchen</Text>
-            </Pressable>
-            {/* BATHROOM */}
-            <Pressable
-              onPress={() => {
-                navigate('HomeScreen', { room: 'BathRoom' })
-                SendToLocalStorage('BathRoom')
-              }}
-            >
-              <Text style={labStyle.button_room_text}>→ㅤBathroom</Text>
-            </Pressable>
-            {/* DINNER ROOM */}
-            <Pressable
-              onPress={() => {
-                navigate('HomeScreen', { room: 'DinnerRoom' })
-                SendToLocalStorage('DinnerRoom')
-              }}
-            >
-              <Text style={labStyle.button_room_text}>→ㅤDinner room</Text>
-            </Pressable>
-            {/* OFFICE */}
-            <Pressable
-              onPress={() => {
-                navigate('HomeScreen', { room: 'Office' })
-                SendToLocalStorage('Office')
-              }}
-            >
-              <Text style={labStyle.button_room_text}>→ㅤOffice</Text>
-            </Pressable>
+            <FlatList
+              data={availableRoomsArray}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    SendToLocalStorage(item.toString())
+                    addToArray()
+                    navigate('HomeScreen', { room: item.toString() })
+                  }}
+                >
+                  <Text style={labStyle.button_room_text}>→ㅤ{item}</Text>
+                </Pressable>
+              )}
+            />
           </View>
         </View>
       </View>
