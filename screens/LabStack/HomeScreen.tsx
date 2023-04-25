@@ -42,6 +42,10 @@ export default (room: any) => {
     }
   }
 
+  // ❗❗❗❗❗❗❗
+  // DELETE WERKT MAAR MOET NOG OPGEPOETST WORDEN WANT HET WERKT ENKEL ALS JE HOMESCREEN ERNA HERLAAD
+  // ❗❗❗❗❗❗❗
+
   AsyncStorage.getAllKeys().then(value => {
     for (let index = 0; index < value.length; index++) {
       const element = value[index]
