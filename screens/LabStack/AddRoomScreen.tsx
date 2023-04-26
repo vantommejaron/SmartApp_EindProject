@@ -111,7 +111,10 @@ export default (roomArray: any) => {
                   onPress={() => {
                     SendToLocalStorage(item.toString())
                     addToArray()
-                    navigate('HomeScreen', { room: item.toString() })
+                    navigate('HomeScreen', {
+                      room: item.toString(),
+                      deleteRoom: '',
+                    })
                   }}
                 >
                   <Text style={labStyle.button_room_text}>→ㅤ{item}</Text>

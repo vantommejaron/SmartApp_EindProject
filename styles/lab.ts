@@ -468,7 +468,7 @@ export const lab = StyleSheet.create({
         position: 'absolute',
         top: 0,
         right: 0,
-        transform: [{ scaleX: 1.3 }, { scaleY: 1.3 },{ translateY: -205}]
+        transform: [{ scaleX: 1.3 }, { scaleY: 1.3 },{ translateY: -225}],
     },
     SetRoomLightOff: {
         flex: 1,
@@ -553,7 +553,7 @@ export const lab = StyleSheet.create({
         color: colors.title,
         fontSize: 20,
         fontWeight: 'bold',
-        transform: [{translateY: -100}],
+        transform: [{translateY: -80}],
         marginLeft: 'auto',
         marginRight: 'auto',
     },

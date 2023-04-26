@@ -250,7 +250,7 @@ export default (room: any) => {
       {
         text: 'YES',
         onPress: () => {
-          navigate('HomeScreen', { room: '' })
+          navigate('HomeScreen', { room: '', deleteRoom: roomName })
           AsyncStorage.removeItem(roomName)
           
         },

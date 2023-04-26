@@ -57,7 +57,7 @@ export default () => {
           <Pressable
             style={labStyle.button}
             onPress={() => {
-              navigate('HomeScreen', { room: '' })
+              navigate('HomeScreen', { room: '', deleteRoom: '' })
 
             }}
           >

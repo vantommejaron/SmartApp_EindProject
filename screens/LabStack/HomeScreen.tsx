@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons'
 import React, { useEffect, useState } from 'react'
 import type { PropsWithChildren } from 'react'
 import { LabStack } from '.'
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity, RefreshControl } from 'react-native'
 import {
   Sofa,
   BedDouble,
@@ -27,7 +27,7 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 // import { Room } from '../../assets/components/Room'
 
-export default (room: any) => {
+export default (room: any, deleteRoom: any) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const [name, SetName] = React.useState('')
@@ -36,20 +36,31 @@ export default (room: any) => {
   })
   const [roomArray, SetRoomArray] = React.useState([])
   console.log(room.route.params.room)
-  if (room.route.params.room != undefined && room.route.params.room != '') {
+  console.log('room: ' + room.route.params.deleteRoom)
+  const deleteRooms = room.route.params.deleteRoom
+  if (
+    room.route.params.room != undefined &&
+    room.route.params.room != '' &&
+    room.route.params.room != deleteRooms
+  ) {
     if (roomArray.includes(room.route.params.room) == false) {
       roomArray.push(room.route.params.room)
     }
   }
-
-  // ❗❗❗❗❗❗❗
-  // DELETE WERKT MAAR MOET NOG OPGEPOETST WORDEN WANT HET WERKT ENKEL ALS JE HOMESCREEN ERNA HERLAAD
-  // ❗❗❗❗❗❗❗
+  if (deleteRooms != undefined && deleteRooms != '') {
+    if (roomArray.includes(deleteRooms) == true) {
+      roomArray.splice(roomArray.indexOf(deleteRooms), 1)
+    }
+  }
 
   AsyncStorage.getAllKeys().then(value => {
     for (let index = 0; index < value.length; index++) {
       const element = value[index]
-      if (element != 'Settings' && roomArray.includes(element) == false) {
+      if (
+        element != 'Settings' &&
+        roomArray.includes(element) == false &&
+        element != deleteRooms
+      ) {
         roomArray.push(element)
         SetRoomArray(roomArray)
         console.log(roomArray)
@@ -124,3 +135,4 @@ export default (room: any) => {
     </>
   )
 }
+window.refre
