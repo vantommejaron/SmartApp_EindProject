@@ -20,17 +20,29 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 export default () => {
     const { navigate} = useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
     const [state, setState] = React.useState(true)
+    const [deviceState, setDeviceState] = React.useState('on')
     AsyncStorage.getItem("Settings").then(value => {
       if (value != null) {
         let data = JSON.parse(value)
         if (data.setupState == true) {
           setState(true)
         }
-        else {
+        if (data.setupState == false) {
           setState(false)
         }
       }
     })
+
+    AsyncStorage.getItem('Settings').then(value => {
+      console.log(JSON.parse(value).device)
+      if (JSON.parse(value).device == 'on') {
+        setDeviceState('on')
+      }
+      if (JSON.parse(value).device == 'off') {
+        setDeviceState('off')
+      }
+    })
+
 
   if (state) {
   return (
@@ -57,7 +69,11 @@ export default () => {
           <Pressable
             style={labStyle.button}
             onPress={() => {
-              navigate('HomeScreen', { room: '', deleteRoom: '' })
+              navigate('HomeScreen', {
+                room: '',
+                deleteRoom: '',
+                deviceState: deviceState,
+              })
 
             }}
           >

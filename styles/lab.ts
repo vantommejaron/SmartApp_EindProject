@@ -233,6 +233,7 @@ export const lab = StyleSheet.create({
         marginBottom: 20,
         marginRight:'auto',
         marginLeft: 30,
+                maxWidth: 200,
     },
     User1: {
         color: colors.title,
@@ -247,6 +248,7 @@ export const lab = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: 20,
         marginLeft: -100,
+
     },
     HomeScreenBox: {
         marginTop: 20,
@@ -310,7 +312,6 @@ export const lab = StyleSheet.create({
         height: 80,
         backgroundColor: colors.background,
         borderRadius: 50,
-        // marginBottom: 20,
         alignItems: 'center',
         paddingTop: 15,
         borderWidth: 4,
@@ -318,7 +319,7 @@ export const lab = StyleSheet.create({
         marginBottom: 50,
         marginLeft: 'auto',
         marginRight: 'auto',
-        transform: [{ translateX: 10},{ translateY: 30}],
+        transform: [{ translateX: 10},{ translateY:30}],
     },
     HomeScreenScrollView: {
         transform: [{ translateX: 5}],
@@ -649,6 +650,29 @@ export const lab = StyleSheet.create({
         textAlign: 'center',
         marginTop: 12,
     },
+    toggleSwitchHomeScreen : {
+        position: 'absolute',
+        top: -5,
+        right: 0,
+    },
+    DevicesOffTitle: {
+        color: colors.title,
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 160,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+    DevicesOffDescription: {
+        color: colors.description,
+        fontSize: 15,
+        fontWeight: 'bold',
+        marginTop: 10,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+
+
 
 
 
