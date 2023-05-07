@@ -1,15 +1,6 @@
-// TODO: Gebruik de stack navigator uit de docs
-// Toon een home screen
-// Voeg een button toe om naar de dtaa screen te gaan
-// Toon de detail screen (nog leeg)
-// Voeg een  button toe om terug te gaan naar de home screen
-// Bekijk hoe je de header kan namaken zoals in het voorbeeld
-
-// TODO: Hoe lang ga je hiermee bezig zijn...?
-
 import { createStackNavigator } from '@react-navigation/stack'
+import React from 'react'
 import Startup from './Startup'
-import Startup2 from './Startup2'
 import Welcome from './Welcome'
 import ChooseName from './ChooseName'
 import ChooseRoom from './ChooseRoom'
@@ -19,13 +10,10 @@ import ChooseCooling from './ChooseCooling'
 import HomeScreen from './HomeScreen'
 import SetRoom from './SetRoom'
 import AddRoomScreen from './AddRoomScreen'
-import { lab as labStyle } from '../../styles/lab'
-import React from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import SelectDevice from './SelectDevice'
 
 const Stack = createStackNavigator()
-// TODO: Lees JSON in en kijk wat de status is
+
 export function LabStack() {
   return (
     <>
@@ -41,7 +29,6 @@ export function LabStack() {
         <Stack.Screen name="SetRoom" component={SetRoom} />
         <Stack.Screen name="AddRoomScreen" component={AddRoomScreen} />
         <Stack.Screen name="SelectDevice" component={SelectDevice} />
-
       </Stack.Navigator>
     </>
   )

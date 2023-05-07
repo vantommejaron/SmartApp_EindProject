@@ -3,9 +3,7 @@ import { lab as labStyle } from '../../styles/lab'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { ParamListBase } from '@react-navigation/native'
-import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
-import { Send, View } from 'lucide-react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const Cooling = ({
@@ -17,9 +15,10 @@ export const Cooling = ({
   coolingName: string
   roomName: string
 }) => {
-  const { navigate, goBack } =
+  const { navigate } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
 
+  // Send the cooling information from the room to the local storage
   const SendToLocalStorage = () => {
     let data = {
       coolingBrand: coolingBrand,
@@ -27,11 +26,7 @@ export const Cooling = ({
     }
     AsyncStorage.mergeItem(roomName, JSON.stringify(data))
     AsyncStorage.mergeItem('Settings', JSON.stringify({ setupState: false }))
-    AsyncStorage.getItem(roomName).then(value => {
-      console.log(value)
-    })
   }
-
   return (
     <>
       <Ionicons
@@ -43,8 +38,6 @@ export const Cooling = ({
       <Pressable
         style={[labStyle.button_light, labStyle.Choose_LightBulb_Box]}
         onPress={() => {
-          // TODO: Send to database!! (status true, zodat het naar homescreen gaat)
-
           navigate('HomeScreen', { room: roomName })
           SendToLocalStorage()
         }}

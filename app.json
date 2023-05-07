@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SmartApp_EindProject",
-    "slug": "SmartApp_EindProject",
+    "name": "Smart Home",
+    "slug": "smart-home",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jaronvantomme.smarthome"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +26,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3dd9a1ea-7be1-4839-bb28-bdf0173e8f38"
+      }
     }
   }
 }

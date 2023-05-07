@@ -1,62 +1,60 @@
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  Switch,
-} from 'react-native'
-import { lab, lab as labStyle } from '../../styles/lab'
-import Icon from '@mdi/react'
-import { mdiHomeCircleOutline } from '@mdi/js'
-import { colors } from '../../styles/colors'
-import { AntDesign } from '@expo/vector-icons'
-import { ParamListBase, useNavigation } from '@react-navigation/native'
-import { StackNavigationProp } from '@react-navigation/stack'
-import { Svg, Path } from 'react-native-svg'
-import { Image } from 'expo-image'
-import { Ionicons } from '@expo/vector-icons'
+import { View, Text, Pressable, Switch } from 'react-native'
+import { lab as labStyle } from '../../styles/lab'
 import React, { useState } from 'react'
-import type { PropsWithChildren } from 'react'
-import { TouchableOpacity } from 'react-native'
-import { ColorPicker } from 'react-native-color-picker'
-import { Picker } from './ColorPicker'
-import CircleSlider from './CircleSlider'
-import Slider from './Slider'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Haptics from 'expo-haptics'
+import Animated, {
+  withTiming,
+  useAnimatedStyle,
+  Easing,
+} from 'react-native-reanimated'
 
 export default (roomName: any, state: any, coolingSpeed: any) => {
   const room = roomName.roomName
   const toggleState = roomName.state
   const coolingState = roomName.coolingSpeed
-  const [coolingValue, setCoolingValue] = useState(coolingState? coolingState : 0)
+  const [coolingValue, setCoolingValue] = useState(coolingState ? coolingState : 0)
+  const [changeColor, setChangeColor] = useState('#007AFF')
+  const [checkToggle1, setcheckToggle1] = useState(toggleState)
+
+  // Button animation
+  const style = useAnimatedStyle(() => {
+    return {
+      backgroundColor: withTiming(changeColor, {
+        duration: 500,
+        easing: Easing.linear,
+      }),
+    }
+  })
+
+  // cooling value -1
   const SetCoolingValueDown = () => {
     if (coolingValue > 0) {
       setCoolingValue(coolingValue - 1)
     }
   }
+
+  // cooling value +1
   const SetCoolingValueUp = () => {
     if (coolingValue < 5) {
       setCoolingValue(coolingValue + 1)
     }
   }
-  const [checkToggle1, setcheckToggle1] = useState(toggleState)
+
+  // Send the cooling information from the room to the local storage
   const SetCooling = () => {
     const Cooling = coolingValue
-    // TODO: Send to database!!
     AsyncStorage.mergeItem(room, JSON.stringify({ Cooling: Cooling }))
   }
+
   if (checkToggle1) {
-    // TODO: Send to database!!
+    // Send the cooling state from the room to the local storage
     AsyncStorage.mergeItem(room, JSON.stringify({ CoolingState: true }))
     return (
       <>
         <Switch
           style={labStyle.toggleSwitch}
           trackColor={{ false: '#767577', true: '#007AFF' }}
-          // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
-          // ios_backgroundColor="#3e3e3e"
           onValueChange={() => setcheckToggle1(!checkToggle1)}
           value={checkToggle1}
         />
@@ -70,7 +68,6 @@ export default (roomName: any, state: any, coolingSpeed: any) => {
             <Text style={labStyle.CoolingStateButtonText}>-</Text>
           </Pressable>
           <Text style={labStyle.CoolingStateText}>{coolingValue}/5</Text>
-          {/* <Text style={labStyle.CoolingStateText2}>/4</Text> */}
           <Pressable
             style={labStyle.CoolingStateButton}
             onPress={() => {
@@ -81,28 +78,31 @@ export default (roomName: any, state: any, coolingSpeed: any) => {
           </Pressable>
         </View>
         <Text style={labStyle.CoolingStateButtonTextBottom}>BLOW SPEED</Text>
-        <Pressable
-          style={labStyle.buttonColorPicker}
-          onPress={() => {
-            SetCooling()
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
-          }}
-        >
-          <Text style={labStyle.buttonColorPickerText}>Set</Text>
-        </Pressable>
+        <Animated.View style={[labStyle.buttonColorPicker, style]}>
+          <Pressable
+            onPress={() => {
+              SetCooling()
+              setChangeColor('white')
+              setTimeout(() => {
+                setChangeColor('#007AFF')
+              }, 100)
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+            }}
+          >
+            <Text style={labStyle.buttonColorPickerText}>Set</Text>
+          </Pressable>
+        </Animated.View>
       </>
     )
   }
   if (!checkToggle1) {
-    // TODO: Send to database!!
+    // Send the cooling state to local storage
     AsyncStorage.mergeItem(room, JSON.stringify({ CoolingState: false }))
     return (
       <>
         <Switch
           style={labStyle.toggleSwitch}
           trackColor={{ false: '#767577', true: '#007AFF' }}
-          // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
-          // ios_backgroundColor="#3e3e3e"
           onValueChange={() => setcheckToggle1(!checkToggle1)}
           value={checkToggle1}
         />

@@ -1,21 +1,20 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
-import Icon from '@mdi/react'
-import { mdiHomeCircleOutline } from '@mdi/js'
-import { colors } from '../../styles/colors'
-import { AntDesign } from '@expo/vector-icons'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { Svg, Path } from 'react-native-svg'
 import { Image } from 'expo-image'
-import { Ionicons } from '@expo/vector-icons' 
+import { Ionicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 
 export default () => {
-    const { navigate, goBack } = useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
-
+  const { navigate, goBack } = useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   return (
     <>
       <View style={labStyle.background}>
+        <LinearGradient
+          colors={['#08004D', '#040029']}
+          style={labStyle.linearGradient}
+        />
         <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
           <Ionicons
             name="arrow-back-outline"

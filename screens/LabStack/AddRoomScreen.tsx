@@ -1,36 +1,21 @@
 import { View, Text, Pressable, StyleSheet, TextInput } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
-import Icon from '@mdi/react'
-import { mdiHomeCircleOutline } from '@mdi/js'
-import { colors } from '../../styles/colors'
-import { AntDesign } from '@expo/vector-icons'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { Svg, Path } from 'react-native-svg'
-import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {
-  Sofa,
-  BedDouble,
-  Microwave,
-  Bath,
-  UtensilsCrossed,
-  Laptop,
-  PlusIcon,
-  CarIcon,
-  Gamepad2,
-} from 'lucide-react-native'
 import { FlatList } from 'react-native-gesture-handler'
+import { LinearGradient } from 'expo-linear-gradient'
 
 export default (roomArray: any) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const room = roomArray.route.params.roomArray
   const [roomArrayNew, setRoomArrayNew] = useState([])
-  const [counter , setCounter] = useState(0)
   const [availableRoomsArray, setAvailableRoomsArray] = useState([])
+
+  // Send the room information to the local storage
   const SendToLocalStorage = (roomName: string) => {
     let data = {
       roomName: roomName,
@@ -45,16 +30,13 @@ export default (roomArray: any) => {
       coolingName: '',
       CoolingState: false,
     }
-    // Save data to local storage (AsyncStorage)
+    // Save the data to the local storage (AsyncStorage)
     AsyncStorage.setItem(roomName, JSON.stringify(data))
-    AsyncStorage.getItem(roomName).then(value => {
-      // console.log(value)
-    })
   }
 
+  // Add the room to the array
   const addToArray = () => {
     AsyncStorage.getAllKeys().then(keys => {
-      // console.log(keys)
       for (let i = 0; i < keys.length; i++) {
         const element = keys[i]
         if (room.includes(element) == false && element != 'Settings') {
@@ -65,8 +47,8 @@ export default (roomArray: any) => {
     })
   }
 
+  // Make a list of all the available rooms
   AsyncStorage.getAllKeys().then(keys => {
-    // console.log(keys)
     var availableRooms = [
       'BedRoom',
       'LivingRoom',
@@ -79,18 +61,20 @@ export default (roomArray: any) => {
     ]
     for (let i = 0; i < keys.length; i++) {
       const element = keys[i]
-      // console.log(element)
       if (availableRooms.includes(element) == true) {
         availableRooms.splice(availableRooms.indexOf(element), 1)
       }
     }
     setAvailableRoomsArray(availableRooms)
-    // console.log(availableRooms)
   })
 
   return (
     <>
       <View style={labStyle.background}>
+        <LinearGradient
+          colors={['#08004D', '#040029']}
+          style={labStyle.linearGradient}
+        />
         <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
           <Ionicons
             name="arrow-back-outline"

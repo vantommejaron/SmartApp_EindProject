@@ -2,31 +2,20 @@ import {
   View,
   Text,
   Pressable,
-  StyleSheet,
-  TextInput,
   ScrollView,
 } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
-import Icon from '@mdi/react'
-import { mdiHomeCircleOutline } from '@mdi/js'
-import { colors } from '../../styles/colors'
-import { AntDesign } from '@expo/vector-icons'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
-import React, { useState } from 'react'
-import { CheckBox } from '@rneui/themed'
-import Svg, { Circle, Rect } from 'react-native-svg'
-import { Lamp } from '../../assets/components/Lamp'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import React from 'react'
 import { LampDevice } from '../../assets/components/LampDevice'
 import { HeatingDevice } from '../../assets/components/HeatingDevice'
-import { Cooling } from '../../assets/components/Cooling'
 import { CoolingDevice } from '../../assets/components/CoolingDevice'
+import { LinearGradient } from 'expo-linear-gradient'
 
 export default (room: any, type: any) => {
-  const { navigate, goBack } =
+  const { goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
 
   const roomName = room.route.params.room
@@ -35,6 +24,10 @@ export default (room: any, type: any) => {
     return (
       <>
         <View style={labStyle.background}>
+          <LinearGradient
+            colors={['#08004D', '#040029']}
+            style={labStyle.linearGradient}
+          />
           <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
             <Ionicons
               name="arrow-back-outline"
@@ -97,11 +90,15 @@ export default (room: any, type: any) => {
     )
   }
   if (typeOfDevice == 'heating') {
-    const { navigate, goBack } =
+    const { goBack } =
         useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
     return (
       <>
         <View style={labStyle.background}>
+          <LinearGradient
+            colors={['#08004D', '#040029']}
+            style={labStyle.linearGradient}
+          />
           <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
             <Ionicons
               name="arrow-back-outline"
@@ -167,6 +164,10 @@ export default (room: any, type: any) => {
     return (
       <>
         <View style={labStyle.background}>
+          <LinearGradient
+            colors={['#08004D', '#040029']}
+            style={labStyle.linearGradient}
+          />
           <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
             <Ionicons
               name="arrow-back-outline"

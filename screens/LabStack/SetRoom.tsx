@@ -2,27 +2,14 @@ import {
   View,
   Text,
   Pressable,
-  StyleSheet,
-  TextInput,
-  Switch,
 } from 'react-native'
-import { lab, lab as labStyle } from '../../styles/lab'
-import Icon from '@mdi/react'
-import { mdiHomeCircleOutline } from '@mdi/js'
-import { colors } from '../../styles/colors'
-import { AntDesign } from '@expo/vector-icons'
+import { lab as labStyle } from '../../styles/lab'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { Svg, Path } from 'react-native-svg'
-import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useState } from 'react'
-import type { PropsWithChildren } from 'react'
-import { LabStack } from '.'
-import { TouchableOpacity, Alert } from 'react-native'
-import { ColorPicker } from 'react-native-color-picker'
+import { Alert } from 'react-native'
 import { Picker } from '../../assets/components/ColorPicker'
-import CircleSlider from '../../assets/components/CircleSlider'
 import Slider from '../../assets/components/Slider'
 import Cooler from '../../assets/components/Cooler'
 import {
@@ -31,10 +18,9 @@ import {
   ThermometerSnowflake,
 } from 'lucide-react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import SelectDevice from './SelectDevice'
 import Icons from '../../assets/components/Icons'
+import { LinearGradient } from 'expo-linear-gradient'
 
-// import { Device } from '../../assets/components/Device'
 type DeviceProps = {
   device1: boolean
   device2: boolean
@@ -42,7 +28,6 @@ type DeviceProps = {
   switchState: boolean
   room: string
 }
-const lightDeviceSelected = false
 
 const Device = ({
   device1,
@@ -62,7 +47,7 @@ const Device = ({
   const [heatingTemperature, setHeatingTemperature] = useState(18)
   const [coolingSpeed, setCoolingSpeed] = useState(0)
 
-  const { navigate, goBack } =
+  const { navigate } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
 
   AsyncStorage.getItem(room).then(value => {
@@ -70,11 +55,11 @@ const Device = ({
       const lightName = JSON.parse(value).lightName
       const heatingName = JSON.parse(value).heatingName
       const coolingName = JSON.parse(value).coolingName
-
       const lightBrightness = JSON.parse(value).Brightness
       const lightColor = JSON.parse(value).Color
       const heatingTemperature = JSON.parse(value).Temperature
       const coolingSpeed = JSON.parse(value).Cooling
+
       setLightState(JSON.parse(value).LightState)
       setHeatingState(JSON.parse(value).HeatingState)
       setCoolingState(JSON.parse(value).CoolingState)
@@ -82,12 +67,8 @@ const Device = ({
       setLightColor(lightColor)
       setHeatingTemperature(heatingTemperature)
       setCoolingSpeed(coolingSpeed)
-      console.log('______________________')
-      console.log(value)
-      console.log(lightColor)
-      console.log('______________________')
 
-      console.log('LIGHTS: ' + lightState)
+      // Check if there is a device selected
       if (!device1) {
         if (lightName != '') {
           setLightDeviceSelected(true)
@@ -111,7 +92,7 @@ const Device = ({
       }
     }
   })
-
+  // When there is a device selected
   if (!device1) {
     if (lightDeviceSelected) {
       if (switchState == true) {
@@ -130,7 +111,9 @@ const Device = ({
       if (switchState == false) {
         return <>{/* <Picker/> */}</>
       }
-    } else {
+    }
+    // When there is no device selected
+    else {
       return (
         <>
           <Text style={labStyle.DeviceSelectedTitle}>
@@ -150,6 +133,7 @@ const Device = ({
       )
     }
   }
+  // When there is a device selected
   if (device3) {
     if (heatingDeviceSelected) {
       if (switchState == true) {
@@ -166,7 +150,9 @@ const Device = ({
       if (switchState == false) {
         return <>{/* <Slider/> */}</>
       }
-    } else {
+    }
+    // When there is no device selected
+    else {
       return (
         <>
           <Text style={labStyle.DeviceSelectedTitle}>
@@ -186,13 +172,11 @@ const Device = ({
       )
     }
   }
+  // When there is a device selected
   if (device2) {
     if (coolingDeviceSelected) {
-      // TODO: Add ThermometerSnowflake
-      // TODO: READ JSON AND CHECK IF THERE IS A DEVICE, MAKE IF STATEMENT
       if (switchState == true) {
         return (
-          // TODO: Zet om naar een component
           <Cooler
             roomName={room}
             state={coolingState}
@@ -203,7 +187,9 @@ const Device = ({
       if (switchState == false) {
         return <>{/* <Slider/> */}</>
       }
-    } else {
+    }
+    // When there is no device selected
+    else {
       return (
         <>
           <Text style={labStyle.DeviceSelectedTitle}>
@@ -225,26 +211,21 @@ const Device = ({
   }
 }
 export default (room: any) => {
-  const roomName = room.route.params.room
   const { navigate, goBack } =
-    useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
-  console.log(room.route.params.room)
+  useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const roomName = room.route.params.room
 
   const [check1, setCheck1] = useState(false)
   const [check2, setCheck2] = useState(true)
   const [check3, setCheck3] = useState(true)
-  const [checkToggle1, setcheckToggle1] = useState(true)
+  const checkToggle1 = true
   const [typeDevice, setTypeDevice] = useState('LIGHT BULB')
 
-  if (checkToggle1 == true) {
-    // TODO: Send data to JSON (color off)
-    console.log('Zet het kleur af')
-  }
+  // Delete room
   const deleteRoom = () => {
     Alert.alert('Delete Room', 'Are you sure you want to delete this room.', [
       {
         text: 'NO',
-        onPress: () => console.log('NO Pressed'),
         style: 'cancel',
       },
       {
@@ -262,6 +243,10 @@ export default (room: any) => {
   return (
     <>
       <View style={labStyle.background}>
+        <LinearGradient
+          colors={['#08004D', '#040029']}
+          style={labStyle.linearGradient}
+        />
         {/* ----------------------------------- HEADER (begin) ----------------------------------- */}
         <View style={labStyle.SetRoomBackContainer}>
           <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
@@ -360,29 +345,7 @@ export default (room: any) => {
             room={roomName}
           />
         </View>
-        {/* -------------------------------------- DEVICES (einde) --------------------------------------- */}
-
-        {/* <View style={labStyle.toggleSwitch}>
-          <Switch
-            style={labStyle.toggleSwitch}
-            trackColor={{ false: '#767577', true: '#007AFF' }}
-            // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
-            // ios_backgroundColor="#3e3e3e"
-            onValueChange={() => setcheckToggle1(!checkToggle1)}
-            value={checkToggle1}
-          />
-        </View> */}
       </View>
     </>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  main: {
-    alignItems: 'center',
-  },
-})

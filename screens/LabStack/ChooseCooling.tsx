@@ -2,34 +2,25 @@ import {
   View,
   Text,
   Pressable,
-  StyleSheet,
-  TextInput,
   ScrollView,
 } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
-import Icon from '@mdi/react'
-import { mdiHomeCircleOutline } from '@mdi/js'
-import { colors } from '../../styles/colors'
-import { AntDesign } from '@expo/vector-icons'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useState } from 'react'
-import { CheckBox } from '@rneui/themed'
-import Svg, { Circle, Rect } from 'react-native-svg'
 import { Cooling } from '../../assets/components/Cooling'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { LinearGradient } from 'expo-linear-gradient'
 
 type CheckboxComponentProps = {}
 
 export default (room: any) => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
-  const [isSelected, setSelection] = useState(false)
-  const [check1, setCheck1] = useState(false)
   const roomName = room.route.params.room
 
+  // Send the cooling information from the room to the local storage and send to the local storage that the setup is done
   const SendToLocalStorage = () => {
     let data = {
       coolingBrand: '',
@@ -37,13 +28,14 @@ export default (room: any) => {
     }
     AsyncStorage.mergeItem(roomName, JSON.stringify(data))
     AsyncStorage.mergeItem('Settings', JSON.stringify({setupState: false}))
-    AsyncStorage.getItem(roomName).then(value => {
-      console.log(value)
-    })
   }
   return (
     <>
       <View style={labStyle.background}>
+        <LinearGradient
+          colors={['#08004D', '#040029']}
+          style={labStyle.linearGradient}
+        />
         <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
           <Ionicons
             name="arrow-back-outline"

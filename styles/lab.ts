@@ -1,5 +1,7 @@
 import { StyleSheet, TextInput } from 'react-native';
 import { colors } from './colors';
+import { ScreenHeight, ScreenWidth } from '@rneui/themed/dist/config';
+import { Scale } from 'lucide-react';
 
 export const lab = StyleSheet.create({
     GoBack: {
@@ -7,11 +9,18 @@ export const lab = StyleSheet.create({
         fontSize: 40,
         marginTop: 20,
         marginLeft: 10,
-        backgroundColor: colors.background,
+        // backgroundColor: colors.background,
     },
     background: {
-        backgroundColor: colors.background,
+        // backgroundColor: colors.background,
         height: '100%',
+    },
+    linearGradient: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height: 700,
     },
     container: {
         flex: 1,
@@ -281,7 +290,7 @@ export const lab = StyleSheet.create({
     HomeScreenButtonEmpty: {
         width: 130,
         height: 130,
-        backgroundColor: colors.background,
+        // backgroundColor: colors.background,
         borderRadius: 30,
         // marginBottom: 20,
         alignItems: 'center',
@@ -310,7 +319,7 @@ export const lab = StyleSheet.create({
     HomeScreenAddButton: {
         width: 80,
         height: 80,
-        backgroundColor: colors.background,
+        // backgroundColor: colors.background,
         borderRadius: 50,
         alignItems: 'center',
         paddingTop: 15,
@@ -670,6 +679,16 @@ export const lab = StyleSheet.create({
         marginTop: 10,
         marginLeft: 'auto',
         marginRight: 'auto',
+    },
+    AnimationItem: {
+        flex: 1,
+        position: 'absolute',
+        backgroundColor: colors.background,
+        // borderRadius: 1000,
+        borderBottomRightRadius: 1000,
+        borderBottomLeftRadius: 1000,
+        borderTopRightRadius: 1000,
+        
     },
 
 

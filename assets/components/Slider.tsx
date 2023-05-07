@@ -1,14 +1,12 @@
 import Slider from '@react-native-community/slider'
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  Switch,
-} from 'react-native'
-import { lab, lab as labStyle } from '../../styles/lab'
+import { View, Text, Pressable, Switch } from 'react-native'
+import { lab as labStyle } from '../../styles/lab'
 import * as Haptics from 'expo-haptics'
+import Animated, {
+  withTiming,
+  useAnimatedStyle,
+  Easing,
+} from 'react-native-reanimated'
 
 import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -16,24 +14,33 @@ export default (roomName: any, state: any, temperature: any) => {
   const room = roomName.roomName
   const toggleState = roomName.state
   const heatingTemperature = roomName.temperature
-  const [value, setValue] = useState(heatingTemperature? heatingTemperature : 18)
-  // TODO: Moet kijken naar de JSON om te checken of de toggle aan of uit staat
+  const [value, setValue] = useState(heatingTemperature ? heatingTemperature : 18)
+  const [changeColor, setChangeColor] = useState('#007AFF')
   const [checkToggle1, setcheckToggle1] = useState(toggleState)
+
+  // button animation
+  const style = useAnimatedStyle(() => {
+    return {
+      backgroundColor: withTiming(changeColor, {
+        duration: 500,
+        easing: Easing.linear,
+      }),
+    }
+  })
+
+  // Set the heating information from the room to the local storage
   const SetHeating = () => {
     const Temperature = value
-    // TODO: Send to database!!
     AsyncStorage.mergeItem(room, JSON.stringify({ Temperature: Temperature }))
   }
   if (checkToggle1) {
-    // TODO: Send to database!!
+    // Send the heating state from the room to the local storage
     AsyncStorage.mergeItem(room, JSON.stringify({ HeatingState: true }))
     return (
       <>
         <Switch
           style={labStyle.toggleSwitch}
           trackColor={{ false: '#767577', true: '#007AFF' }}
-          // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
-          // ios_backgroundColor="#3e3e3e"
           onValueChange={() => setcheckToggle1(!checkToggle1)}
           value={checkToggle1}
         />
@@ -50,27 +57,31 @@ export default (roomName: any, state: any, temperature: any) => {
             maximumTrackTintColor="#736F96"
           />
         </View>
-        <Pressable
-          style={labStyle.buttonColorPicker}
-          onPress={() => {
-            SetHeating()
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
-          }}
-        >
-          <Text style={labStyle.buttonColorPickerText}>Set</Text>
-        </Pressable>
+        <Animated.View style={[labStyle.buttonColorPicker, style]}>
+          <Pressable
+            onPress={() => {
+              SetHeating()
+              setChangeColor('white')
+              setTimeout(() => {
+                setChangeColor('#007AFF')
+              }, 100)
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+            }}
+          >
+            <Text style={labStyle.buttonColorPickerText}>Set</Text>
+          </Pressable>
+        </Animated.View>
       </>
     )
   }
   if (!checkToggle1) {
+    // Send the heating state from the room to the local storage
     AsyncStorage.mergeItem(room, JSON.stringify({ HeatingState: false }))
     return (
       <>
         <Switch
           style={labStyle.toggleSwitch}
           trackColor={{ false: '#767577', true: '#007AFF' }}
-          // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
-          // ios_backgroundColor="#3e3e3e"
           onValueChange={() => {
             setcheckToggle1(!checkToggle1)
           }}

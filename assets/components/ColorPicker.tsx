@@ -4,61 +4,57 @@ import { Pressable, Switch, View } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { Text } from 'react-native'
 import Slider from '@react-native-community/slider'
-import { color } from '@rneui/themed/dist/config'
-import { toHsv, fromHsv } from 'react-native-color-picker'
-import { LabStack } from '../../screens/LabStack'
+import { fromHsv } from 'react-native-color-picker'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Haptics from 'expo-haptics'
+import Animated, {
+  withTiming,
+  useAnimatedStyle,
+  Easing,
+} from 'react-native-reanimated'
 
 export const Picker = (roomName: any, state: any, brightness: any, color: any) => {
   const room = roomName.roomName
   const toggleState = roomName.state
   const lightBrightness = roomName.brightness
   const lightColor = roomName.color
-  console.log('-----------------------------------')
-  console.log(lightBrightness)
-  console.log(lightColor)
-  console.log('-----------------------------------')
   const [checkToggle1, setcheckToggle1] = useState(toggleState)
-  const getData = async () => {
-    AsyncStorage.getItem(room).then(value => {
-      if (value !== null) {
-        var data = JSON.parse(value).LightState
-        console.log(data)
-      }
-    })
-  }
-  console.log(getData())
-  console.log(room)
-
+  const [changeColor, setChangeColor] = useState("#007AFF")
   const [colorValue, setColorValue] = useState(lightColor? lightColor : '#FF0000')
   const [value, setValue] = useState(lightBrightness? lightBrightness : 0)
+
+  // Send the light information from the room to the local storage
   const SetLights = () => {
     const Brightness = value
     const Color = colorValue
-    // TODO: Send to database!!
     AsyncStorage.mergeItem(room, JSON.stringify({ Brightness: Brightness, Color: Color }))
   }
 
+  // Button animation
+  const style = useAnimatedStyle(() => {
+    return {
+      backgroundColor: withTiming(changeColor, {
+        duration: 500,
+        easing: Easing.linear,
+      }),
+    }
+  })
+
   if (checkToggle1) {
-    // TODO: Send to database!!
+    // Send the light state to the local storage
     AsyncStorage.mergeItem(room, JSON.stringify({ LightState: true }))
     return (
       <>
         <Switch
           style={labStyle.toggleSwitch}
           trackColor={{ false: '#767577', true: '#007AFF' }}
-          // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
-          // ios_backgroundColor="#3e3e3e"
           onValueChange={() => {
             setcheckToggle1(!checkToggle1)
           }}
           value={checkToggle1}
         />
         <ColorPicker
-          // onColorSelected={color => setColorValue(color)}
           onColorChange={color => setColorValue(fromHsv(color))}
-          // onColorChange={color => console.log(`Color selected: ${color}`)}
           style={{ flex: 1 }}
           hideSliders
           color={colorValue}
@@ -76,28 +72,32 @@ export const Picker = (roomName: any, state: any, brightness: any, color: any) =
             maximumTrackTintColor="#736F96"
           />
         </View>
-        <Pressable
-          style={labStyle.buttonColorPicker}
-          onPress={() => {
-            SetLights()
-             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
-          }}
-        >
-          <Text style={labStyle.buttonColorPickerText}>Set</Text>
-        </Pressable>
+        <Animated.View style={[labStyle.buttonColorPicker, style]}>
+          <Pressable
+            onPress={() => {
+              SetLights()
+              setChangeColor("white")
+              setTimeout(() => {
+              setChangeColor('#007AFF')
+              }, 100)
+
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+            }}
+          >
+            <Text style={labStyle.buttonColorPickerText}>Set</Text>
+          </Pressable>
+        </Animated.View>
       </>
     )
   }
   if (!checkToggle1) {
+    // Send the light state to the local storage
     AsyncStorage.mergeItem(room, JSON.stringify({ LightState: false }))
-
     return (
       <>
         <Switch
           style={labStyle.toggleSwitch}
           trackColor={{ false: '#767577', true: '#007AFF' }}
-          // thumbColor={checkToggle1 ? '#f5dd4b' : '#f4f3f4'}
-          // ios_backgroundColor="#3e3e3e"
           onValueChange={() => {
             setcheckToggle1(!checkToggle1)
           }}
