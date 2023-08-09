@@ -4,29 +4,56 @@ import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Ionicons } from '@expo/vector-icons'
 import React from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../Redux/store'
+import { checkIfRoomExists, postData } from '../../assets/components/Api'
 
 export default () => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const screenState = useSelector((state: RootState) => state.userList)
 
-  // Send the room information to the local storage
-  const SendToLocalStorage = (roomName:string) => {
+  const SendToDatabase = async (roomName: string) => {
+    // Controleren of de kamer al bestaat in de database
+    const roomExists = await checkIfRoomExists(roomName)
+
+    if (roomExists) {
+      // De kamer bestaat al, dus ga naar het volgende scherm
+      console.log('Room already exists in the database.')
+      return
+    }
+
+    // De kamer bestaat nog niet, dus voeg hem toe aan de database
     let data = {
       roomName: roomName,
       roomIcon: roomName,
+      Name: screenState.name,
       lightBrand: '',
       lightName: '',
+      brightness: 0,
+      color: '',
       lightState: false,
       heatingBrand: '',
       heatingName: '',
-      hetingState: false,
+      temperature: 0,
+      heatingState: false,
       coolingBrand: '',
       coolingName: '',
-      CoolingState: false,
+      speed: 0,
+      coolingState: false,
     }
-    AsyncStorage.setItem(roomName, JSON.stringify(data))
+
+    try {
+      const response = await postData(data)
+      if (response.ok) {
+        // POST verzoek was succesvol
+      } else {
+        // POST verzoek was niet succesvol
+      }
+    } catch (error) {
+      console.log('Error sending data:', error)
+    }
   }
 
   return (
@@ -53,7 +80,7 @@ export default () => {
             <Pressable
               onPress={() => {
                 navigate('ChooseLight', { room: 'BedRoom' })
-                SendToLocalStorage('BedRoom')
+                SendToDatabase('BedRoom')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤBedroom</Text>
@@ -62,7 +89,7 @@ export default () => {
             <Pressable
               onPress={() => {
                 navigate('ChooseLight', { room: 'LivingRoom' })
-                SendToLocalStorage('LivingRoom')
+                SendToDatabase('LivingRoom')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤLiving room</Text>
@@ -71,7 +98,7 @@ export default () => {
             <Pressable
               onPress={() => {
                 navigate('ChooseLight', { room: 'Kitchen' })
-                SendToLocalStorage('Kitchen')
+                SendToDatabase('Kitchen')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤKitchen</Text>
@@ -80,7 +107,7 @@ export default () => {
             <Pressable
               onPress={() => {
                 navigate('ChooseLight', { room: 'BathRoom' })
-                SendToLocalStorage('BathRoom')
+                SendToDatabase('BathRoom')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤBathroom</Text>
@@ -89,7 +116,7 @@ export default () => {
             <Pressable
               onPress={() => {
                 navigate('ChooseLight', { room: 'DinnerRoom' })
-                SendToLocalStorage('DinnerRoom')
+                SendToDatabase('DinnerRoom')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤDinner room</Text>
@@ -98,7 +125,7 @@ export default () => {
             <Pressable
               onPress={() => {
                 navigate('ChooseLight', { room: 'Office' })
-                SendToLocalStorage('Office')
+                SendToDatabase('Office')
               }}
             >
               <Text style={labStyle.button_room_text}>→ㅤOffice</Text>

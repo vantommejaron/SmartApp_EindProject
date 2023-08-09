@@ -1,25 +1,24 @@
-import {
-  View,
-  Text,
-  Pressable,
-} from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Ionicons } from '@expo/vector-icons'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
 import { Picker } from '../../assets/components/ColorPicker'
 import Slider from '../../assets/components/Slider'
 import Cooler from '../../assets/components/Cooler'
+import { useDispatch, useSelector } from 'react-redux'
+
 import {
   Lightbulb,
   ThermometerSun,
   ThermometerSnowflake,
 } from 'lucide-react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import Icons from '../../assets/components/Icons'
 import { LinearGradient } from 'expo-linear-gradient'
+import { deleteRoomById, getRoomById, getRoomIdByName } from '../../assets/components/Api'
+import { RootState } from '../../Redux/store'
 
 type DeviceProps = {
   device1: boolean
@@ -44,55 +43,68 @@ const Device = ({
   const [coolingState, setCoolingState] = useState(false)
   const [lightBrightness, setLightBrightness] = useState(0)
   const [lightColor, setLightColor] = useState('#FF0000')
-  const [heatingTemperature, setHeatingTemperature] = useState(18)
+  const [heatingTemperature, setHeatingTemperature] = useState(0)
   const [coolingSpeed, setCoolingSpeed] = useState(0)
 
   const { navigate } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const screenState = useSelector((state: RootState) => state.userList)
 
-  AsyncStorage.getItem(room).then(value => {
-    if (value != null) {
-      const lightName = JSON.parse(value).lightName
-      const heatingName = JSON.parse(value).heatingName
-      const coolingName = JSON.parse(value).coolingName
-      const lightBrightness = JSON.parse(value).Brightness
-      const lightColor = JSON.parse(value).Color
-      const heatingTemperature = JSON.parse(value).Temperature
-      const coolingSpeed = JSON.parse(value).Cooling
+  const getRoomInfo = async (roomName: string) => {
+    try {
+      const roomId = await getRoomIdByName(roomName, screenState.name)
+      const response = await getRoomById(roomId)
 
-      setLightState(JSON.parse(value).LightState)
-      setHeatingState(JSON.parse(value).HeatingState)
-      setCoolingState(JSON.parse(value).CoolingState)
-      setLightBrightness(lightBrightness)
-      setLightColor(lightColor)
-      setHeatingTemperature(heatingTemperature)
-      setCoolingSpeed(coolingSpeed)
+      if (response) {
+        const data = response
+        const lightName = data.lightName
+        const lightBrightness = data.brightness
+        const lightColor = data.color
+        setLightState(data.lightState)
+        setLightBrightness(data.brightness)
+        setLightColor(data.color)
 
-      // Check if there is a device selected
-      if (!device1) {
+        const heatingName = data.heatingName
+        const heatingTemperature = data.temperature
+        setHeatingState(data.heatingState)
+        setHeatingTemperature(data.temperature)
+        setHeatingTemperature(0)
+
+        const coolingName = data.coolingName
+        const coolingSpeed = data.speed
+        setCoolingState(data.coolingState)
+        setCoolingSpeed(data.speed)
+
         if (lightName != '') {
           setLightDeviceSelected(true)
         } else {
           setLightDeviceSelected(false)
         }
-      }
-      if (!device2) {
+
         if (heatingName != '') {
           setHeatingDeviceSelected(true)
         } else {
           setHeatingDeviceSelected(false)
         }
-      }
-      if (!device3) {
+
         if (coolingName != '') {
           setcoolingDeviceSelected(true)
         } else {
           setcoolingDeviceSelected(false)
         }
+      } else {
+        throw console.log('Failed to fetch room data.')
       }
+    } catch (error) {
+      console.log('Error getting room ID:', error)
+      return null
     }
-  })
-  // When there is a device selected
+  }
+
+  useEffect(() => {
+    getRoomInfo(room)
+  }, [])
+
   if (!device1) {
     if (lightDeviceSelected) {
       if (switchState == true) {
@@ -112,7 +124,6 @@ const Device = ({
         return <>{/* <Picker/> */}</>
       }
     }
-    // When there is no device selected
     else {
       return (
         <>
@@ -133,7 +144,6 @@ const Device = ({
       )
     }
   }
-  // When there is a device selected
   if (device3) {
     if (heatingDeviceSelected) {
       if (switchState == true) {
@@ -151,7 +161,6 @@ const Device = ({
         return <>{/* <Slider/> */}</>
       }
     }
-    // When there is no device selected
     else {
       return (
         <>
@@ -172,7 +181,6 @@ const Device = ({
       )
     }
   }
-  // When there is a device selected
   if (device2) {
     if (coolingDeviceSelected) {
       if (switchState == true) {
@@ -188,7 +196,6 @@ const Device = ({
         return <>{/* <Slider/> */}</>
       }
     }
-    // When there is no device selected
     else {
       return (
         <>
@@ -212,7 +219,7 @@ const Device = ({
 }
 export default (room: any) => {
   const { navigate, goBack } =
-  useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+    useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const roomName = room.route.params.room
 
   const [check1, setCheck1] = useState(false)
@@ -221,7 +228,24 @@ export default (room: any) => {
   const checkToggle1 = true
   const [typeDevice, setTypeDevice] = useState('LIGHT BULB')
 
-  // Delete room
+  const dispatch = useDispatch()
+  const screenState = useSelector((state: RootState) => state.userList)
+
+  // Verwijderen van een kamer uit de database
+  const deleteRoomFromDatabase = async (roomName: string) => {
+    try {
+      const id = await getRoomIdByName(roomName, screenState.name)
+      const response = deleteRoomById(id)
+      if ((await response).ok) {
+        // Delete-verzoek was succesvol
+      } else {
+        // Delete-verzoek was niet succesvol
+      }
+    } catch (error) {
+      console.log('Error deleting room:', error)
+    }
+  }
+
   const deleteRoom = () => {
     Alert.alert('Delete Room', 'Are you sure you want to delete this room.', [
       {
@@ -230,10 +254,9 @@ export default (room: any) => {
       },
       {
         text: 'YES',
-        onPress: () => {
+        onPress: async () => {
+          deleteRoomFromDatabase(roomName)
           navigate('HomeScreen', { room: '', deleteRoom: roomName })
-          AsyncStorage.removeItem(roomName)
-          
         },
         style: 'default',
       },
@@ -247,7 +270,6 @@ export default (room: any) => {
           colors={['#08004D', '#040029']}
           style={labStyle.linearGradient}
         />
-        {/* ----------------------------------- HEADER (begin) ----------------------------------- */}
         <View style={labStyle.SetRoomBackContainer}>
           <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
             <Ionicons
@@ -261,7 +283,6 @@ export default (room: any) => {
             {room.route.params.room}
           </Text>
         </View>
-        {/* ----------------------------------- HEADER (einde) ----------------------------------- */}
         <Pressable style={labStyle.SetRoomDeivceName}>
           <Text style={labStyle.button_onboarding_text}>{typeDevice}</Text>
         </Pressable>
@@ -272,7 +293,6 @@ export default (room: any) => {
         >
           <Icons icon="Delete" size={30} style={labStyle.DeleteButton} />
         </Pressable>
-        {/* ---------------------------------- OPTIONS DEVICES (begin) ----------------------------------- */}
         <View style={labStyle.SetRoomDeviceContainer}>
           <Pressable
             style={[
@@ -334,8 +354,6 @@ export default (room: any) => {
         <Text style={labStyle.chooseDeviceText}>
           LIGHTS ㅤㅤㅤ HEATING ㅤㅤㅤ COOLING
         </Text>
-        {/* ---------------------------------- OPTIONS DEVICES (einde) ----------------------------------- */}
-        {/* -------------------------------------- DEVICES (begin) --------------------------------------- */}
         <View style={labStyle.DeviceContainer}>
           <Device
             device1={check1}

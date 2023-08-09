@@ -1,36 +1,117 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ColorPicker } from 'react-native-color-picker'
-import { Pressable, Switch, View } from 'react-native'
+import { ActivityIndicator, Pressable, Switch, View } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { Text } from 'react-native'
 import Slider from '@react-native-community/slider'
 import { fromHsv } from 'react-native-color-picker'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Haptics from 'expo-haptics'
 import Animated, {
   withTiming,
   useAnimatedStyle,
   Easing,
 } from 'react-native-reanimated'
+import { getRoomById, getRoomIdByName, putData } from './Api'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../Redux/store'
 
-export const Picker = (roomName: any, state: any, brightness: any, color: any) => {
+export const Picker = (
+  roomName: any,
+  state: any,
+  brightness: any,
+  color: any,
+) => {
   const room = roomName.roomName
   const toggleState = roomName.state
   const lightBrightness = roomName.brightness
   const lightColor = roomName.color
   const [checkToggle1, setcheckToggle1] = useState(toggleState)
-  const [changeColor, setChangeColor] = useState("#007AFF")
-  const [colorValue, setColorValue] = useState(lightColor? lightColor : '#FF0000')
-  const [value, setValue] = useState(lightBrightness? lightBrightness : 0)
+  const [changeColor, setChangeColor] = useState('#007AFF')
+  const [colorValue, setColorValue] = useState(
+    lightColor ? lightColor : '#FF0000',
+  )
+  const [value, setValue] = useState(lightBrightness ? lightBrightness : 0)
+  const [isSettingLights, setIsSettingLights] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const screenState = useSelector((state: RootState) => state.userList)
 
-  // Send the light information from the room to the local storage
-  const SetLights = () => {
-    const Brightness = value
-    const Color = colorValue
-    AsyncStorage.mergeItem(room, JSON.stringify({ Brightness: Brightness, Color: Color }))
+  useEffect(() => {
+    // Stel de lichtstatus in
+    const SetLightState = async () => {
+      await setLoading(true)
+      const roomId = await getRoomIdByName(room, screenState.name)
+      if (roomId) {
+        let data = {
+          lightState: checkToggle1,
+        }
+
+        try {
+          const response = await putData(roomId, data)
+          await setLoading(false)
+
+          if ((await response).ok) {
+            // PUT-verzoek was succesvol
+          } else {
+            // PUT-verzoek was niet succesvol
+          }
+        } catch (error) {
+          SetLightState()
+        }
+      }
+    }
+    SetLightState()
+  }, [checkToggle1])
+
+  // Haal de lichtinformatie van de kamer op uit de database
+  const setValueLight = async (roomName: string) => {
+    try {
+      await setLoading(true)
+      const roomId = await getRoomIdByName(roomName, screenState.name)
+      const response = await getRoomById(roomId)
+      await setLoading(false)
+      const data = response
+      setValue(data.brightness)
+      setColorValue(data.color)
+      setcheckToggle1(data.lightState)
+    } catch (error) {
+      setValueLight(room)
+    }
   }
 
-  // Button animation
+  useEffect(() => {
+    setValueLight(room)
+  }, [])
+
+  // Stuur de lichtinformatie naar de database
+  const SetLights = async () => {
+    if (isSettingLights) {
+      return
+    }
+    setIsSettingLights(true)
+    await setLoading(true)
+    const roomId = await getRoomIdByName(room, screenState.name)
+    if (roomId) {
+      let data = {
+        brightness: value,
+        color: colorValue,
+      }
+
+      try {
+        const response = await putData(roomId, data)
+        await setLoading(false)
+
+        if (response.ok) {
+          // PUT-verzoek was succesvol
+        } else {
+          // PUT-verzoek was niet succesvol
+        }
+      } catch (error) {
+        SetLights()
+      }
+    }
+  }
+
+  // Knop animatie
   const style = useAnimatedStyle(() => {
     return {
       backgroundColor: withTiming(changeColor, {
@@ -40,9 +121,16 @@ export const Picker = (roomName: any, state: any, brightness: any, color: any) =
     }
   })
 
+  if (loading) {
+    // Show loading indicator
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    )
+  }
+
   if (checkToggle1) {
-    // Send the light state to the local storage
-    AsyncStorage.mergeItem(room, JSON.stringify({ LightState: true }))
     return (
       <>
         <Switch
@@ -76,9 +164,9 @@ export const Picker = (roomName: any, state: any, brightness: any, color: any) =
           <Pressable
             onPress={() => {
               SetLights()
-              setChangeColor("white")
+              setChangeColor('white')
               setTimeout(() => {
-              setChangeColor('#007AFF')
+                setChangeColor('#007AFF')
               }, 100)
 
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
@@ -91,8 +179,6 @@ export const Picker = (roomName: any, state: any, brightness: any, color: any) =
     )
   }
   if (!checkToggle1) {
-    // Send the light state to the local storage
-    AsyncStorage.mergeItem(room, JSON.stringify({ LightState: false }))
     return (
       <>
         <Switch

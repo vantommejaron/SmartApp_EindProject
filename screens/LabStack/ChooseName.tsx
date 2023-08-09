@@ -1,28 +1,61 @@
-import { View, Text, Pressable, TextInput } from 'react-native'
+import { View, Text, Pressable, TextInput, Settings } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Ionicons } from '@expo/vector-icons'
-import React from 'react'
+import React, { useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LinearGradient } from 'expo-linear-gradient'
+import { getRoomIdByName, postData } from '../../assets/components/Api'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '../../Redux/store'
+import { setName } from '../../Redux/userListSlice'
 
 export default () => {
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const [text, onChangeText] = React.useState('Your name')
+  const dispatch = useDispatch()
 
-  // Send the name to the local storage and check if the name is filled in
-  const SendToLocalStorage = (text:string) => {
-    if (text != '' && text != 'Your name') {
-    AsyncStorage.mergeItem('Settings', JSON.stringify({ userName: text }))
-    navigate('ChooseRoom')
-    }
-    else {
+  const screenState = useSelector((state: RootState) => state.userList)
+
+  const SendToDatabase = async (text: string) => {
+    // Kijken of het een heldige naam is
+    if (text !== '' && text !== 'Your name') {
+      // Sla de naam op in de Local Storage en Redux store
+      AsyncStorage.setItem('Name', text)
+      dispatch(setName(text))
+      try {
+        const roomId = await getRoomIdByName('Settings', text)
+        // Kijken of de naam in de database staat
+        if (roomId) {
+          alert(
+            'Deze persoon bestaat al in de database, verzin een andere naam',
+          )
+        } else {
+          const data = {
+            roomName: 'Settings',
+            Name: text,
+            Setupstate: true,
+            Device: 'OFF',
+          }
+
+          const response = await postData(data)
+          if (response.ok) {
+            // POST-verzoek was succesvol
+            navigate('ChooseRoom')
+          } else {
+            // POST-verzoek was niet succesvol
+            console.log('Failed to send data to the database')
+          }
+        }
+      } catch (error) {
+        console.error('Error sending data:', error)
+      }
+    } else {
       alert('Please enter your name')
     }
   }
-
 
   return (
     <>
@@ -54,7 +87,7 @@ export default () => {
           <Pressable
             style={labStyle.button_onboarding_next}
             onPress={() => {
-              SendToLocalStorage(text.toString())
+              SendToDatabase(text.toString())
             }}
           >
             <Text style={labStyle.button_onboarding_text}>Next</Text>

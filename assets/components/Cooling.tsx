@@ -4,7 +4,9 @@ import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { ParamListBase } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getRoomIdByName, putData } from './Api'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../Redux/store'
 
 export const Cooling = ({
   coolingBrand,
@@ -17,15 +19,44 @@ export const Cooling = ({
 }) => {
   const { navigate } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const screenState = useSelector((state: RootState) => state.userList)
 
-  // Send the cooling information from the room to the local storage
-  const SendToLocalStorage = () => {
-    let data = {
-      coolingBrand: coolingBrand,
-      coolingName: coolingName,
+  const updateSetupStateInDatabase = async () => {
+    try {
+      const id = await getRoomIdByName('Settings', screenState.name)
+      const response = await putData(id, { Setupstate: true })
+      if ((await response).ok) {
+        // PUT-verzoek was succesvol
+      } else {
+        // PUT-verzoek was niet succesvol
+      }
+    } catch (error) {
+      console.log('Error updating setup state in the database:', error)
     }
-    AsyncStorage.mergeItem(roomName, JSON.stringify(data))
-    AsyncStorage.mergeItem('Settings', JSON.stringify({ setupState: false }))
+  }
+
+  // Stuur de data naar de database
+  const SendToDatabase = async () => {
+    updateSetupStateInDatabase()
+    const roomId = await getRoomIdByName(roomName, screenState.name)
+    if (roomId) {
+      let data = {
+        coolingBrand: coolingBrand,
+        coolingName: coolingName,
+      }
+
+      try {
+        const response = putData(roomId, data)
+
+        if ((await response).ok) {
+          // PUT-verzoek was succesvol
+        } else {
+          // PUT-verzoek was niet succesvol
+        }
+      } catch (error) {
+        console.log('Error updating data:', error)
+      }
+    }
   }
   return (
     <>
@@ -39,7 +70,7 @@ export const Cooling = ({
         style={[labStyle.button_light, labStyle.Choose_LightBulb_Box]}
         onPress={() => {
           navigate('HomeScreen', { room: roomName })
-          SendToLocalStorage()
+          SendToDatabase()
         }}
       >
         <Text style={labStyle.Cooling_title}>Bestron Smart</Text>

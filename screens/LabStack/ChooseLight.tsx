@@ -1,35 +1,56 @@
-import {
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-} from 'react-native'
+import { View, Text, Pressable, ScrollView, Animated } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Ionicons } from '@expo/vector-icons'
 import React from 'react'
 import { Lamp } from '../../assets/components/Lamp'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LinearGradient } from 'expo-linear-gradient'
-
+import { getRoomIdByName, putData } from '../../assets/components/Api'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../Redux/store'
 
 type CheckboxComponentProps = {}
 
 export default (room: any) => {
+  const fadeAnim = React.useRef(new Animated.Value(0)).current
+
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const roomName = room.route.params.room
-  
-  // Send the light information from room to the local storage
-  const SendToLocalStorage = () => {
-    let data = {
-      lightBrand: '',
-      lightName: '',
-    }
-    AsyncStorage.mergeItem(roomName, JSON.stringify(data))
-  }
+  const screenState = useSelector((state: RootState) => state.userList)
 
+  const SendToDatabase = async () => {
+    const roomId = await getRoomIdByName(roomName, screenState.name)
+    if (roomId) {
+      try {
+        let data = {
+          lightBrand: '',
+          lightName: '',
+          brightness: 0,
+          color: '',
+        }
+        const response = putData(roomId, data)
+
+        if ((await response).ok) {
+          // PUT-verzoek was succesvol
+        } else {
+          // PUT-verzoek was niet succesvol
+        }
+      } catch (error) {
+        console.log('Error updating data:', error)
+      }
+    }
+  }
+  React.useEffect(() => {
+    Animated.stagger(100, [
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start()
+  }, [fadeAnim])
   return (
     <>
       <View style={labStyle.background}>
@@ -50,46 +71,60 @@ export default (room: any) => {
             Choose a light device you want to connect
           </Text>
           <ScrollView>
-            <Lamp
-              lightBrand="Philips Smart"
-              lightName="Philips Smart LED E2"
-              roomName={roomName}
-            />
-            <Lamp
-              lightBrand="Philips Smart"
-              lightName="Philips Smart LED E2"
-              roomName={roomName}
-            />
-            <Lamp
-              lightBrand="Philips Smart"
-              lightName="Philips Smart LED E2"
-              roomName={roomName}
-            />
-            <Lamp
-              lightBrand="Philips Smart"
-              lightName="Philips Smart LED E2"
-              roomName={roomName}
-            />
-            <Lamp
-              lightBrand="Philips Smart"
-              lightName="Philips Smart LED E2"
-              roomName={roomName}
-            />
-            <Lamp
-              lightBrand="Philips Smart"
-              lightName="Philips Smart LED E2"
-              roomName={roomName}
-            />
-            <Lamp
-              lightBrand="Philips Smart"
-              lightName="Philips Smart LED E2"
-              roomName={roomName}
-            />
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Lamp
+                lightBrand="Philips Smart"
+                lightName="Philips Smart LED E2"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Lamp
+                lightBrand="Philips Smart"
+                lightName="Philips Smart LED E2"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Lamp
+                lightBrand="Philips Smart"
+                lightName="Philips Smart LED E2"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Lamp
+                lightBrand="Philips Smart"
+                lightName="Philips Smart LED E2"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Lamp
+                lightBrand="Philips Smart"
+                lightName="Philips Smart LED E2"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Lamp
+                lightBrand="Philips Smart"
+                lightName="Philips Smart LED E2"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Lamp
+                lightBrand="Philips Smart"
+                lightName="Philips Smart LED E2"
+                roomName={roomName}
+              />
+            </Animated.View>
           </ScrollView>
           <Pressable
             onPress={() => {
               navigate('ChooseHeating', { room: roomName })
-              SendToLocalStorage()
+              SendToDatabase()
             }}
           >
             <Text style={labStyle.skipButton}>SKIP</Text>

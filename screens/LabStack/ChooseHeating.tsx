@@ -1,33 +1,58 @@
-import {
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-} from 'react-native'
+import { View, Text, Pressable, ScrollView, Animated } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { Ionicons } from '@expo/vector-icons'
 import React from 'react'
 import { Heating } from '../../assets/components/Heating'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LinearGradient } from 'expo-linear-gradient'
+import { getRoomIdByName, putData } from '../../assets/components/Api'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../Redux/store'
 
 type CheckboxComponentProps = {}
 
-export default (room:any) => {
+export default (room: any) => {
+  const fadeAnim = React.useRef(new Animated.Value(0)).current
+
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const roomName = room.route.params.room
+  const screenState = useSelector((state: RootState) => state.userList)
 
-  // Send the heating information from the room to the local storage
-  const SendToLocalStorage = () => {
-    let data = {
-      heatingBrand: '',
-      heatingName: '',
+  const SendToDatabase = async () => {
+    const roomId = await getRoomIdByName(roomName, screenState.name)
+    if (roomId) {
+      let data = {
+        heatingBrand: '',
+        heatingName: '',
+        temperature: 0,
+      }
+
+      try {
+        const response = putData(roomId, data)
+        if ((await response).ok) {
+          // PUT-verzoek was succesvol
+        } else {
+          // PUT-verzoek was niet succesvol
+        }
+      } catch (error) {
+        console.log('Error updating data:', error)
+      }
     }
-    AsyncStorage.mergeItem(roomName, JSON.stringify(data))
   }
+
+
+  React.useEffect(() => {
+    Animated.stagger(100, [
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start()
+  }, [fadeAnim])
+
   return (
     <>
       <View style={labStyle.background}>
@@ -45,54 +70,70 @@ export default (room:any) => {
         </Pressable>
         <View style={[labStyle.background, labStyle.containerLight]}>
           <Text style={labStyle.LightTitle}>
-            Choose a light device you want to connect
+            Choose a heating device you want to connect
           </Text>
           <ScrollView>
-            <Heating
-              heatingBrand="Hama"
-              heatingName="Bluetooth heater E27"
-              roomName={roomName}
-            />
-            <Heating
-              heatingBrand="Hama"
-              heatingName="Bluetooth heater E27"
-              roomName={roomName}
-            />
-            <Heating
-              heatingBrand="Hama"
-              heatingName="Bluetooth heater E27"
-              roomName={roomName}
-            />
-            <Heating
-              heatingBrand="Hama"
-              heatingName="Bluetooth heater E27"
-              roomName={roomName}
-            />
-            <Heating
-              heatingBrand="Hama"
-              heatingName="Bluetooth heater E27"
-              roomName={roomName}
-            />
-            <Heating
-              heatingBrand="Hama"
-              heatingName="Bluetooth heater E27"
-              roomName={roomName}
-            />
-            <Heating
-              heatingBrand="Hama"
-              heatingName="Bluetooth heater E27"
-              roomName={roomName}
-            />
-            <Heating
-              heatingBrand="Hama"
-              heatingName="Bluetooth heater E27"
-              roomName={roomName}
-            />
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Heating
+                heatingBrand="Hama"
+                heatingName="Bluetooth heater E27"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Heating
+                heatingBrand="Hama"
+                heatingName="Bluetooth heater E27"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Heating
+                heatingBrand="Hama"
+                heatingName="Bluetooth heater E27"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Heating
+                heatingBrand="Hama"
+                heatingName="Bluetooth heater E27"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Heating
+                heatingBrand="Hama"
+                heatingName="Bluetooth heater E27"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Heating
+                heatingBrand="Hama"
+                heatingName="Bluetooth heater E27"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Heating
+                heatingBrand="Hama"
+                heatingName="Bluetooth heater E27"
+                roomName={roomName}
+              />
+            </Animated.View>
+            <Animated.View style={{ opacity: fadeAnim }}>
+              <Heating
+                heatingBrand="Hama"
+                heatingName="Bluetooth heater E27"
+                roomName={roomName}
+              />
+            </Animated.View>
           </ScrollView>
           <Pressable
             onPress={() => {
               navigate('ChooseCooling', { room: roomName })
-              SendToLocalStorage()
+              SendToDatabase()
             }}
           >
             <Text style={labStyle.skipButton}>SKIP</Text>

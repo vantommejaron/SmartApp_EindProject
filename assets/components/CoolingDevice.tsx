@@ -4,7 +4,9 @@ import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { ParamListBase } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../Redux/store'
+import { getRoomIdByName, putData } from './Api'
 
 export const CoolingDevice = ({
   coolingBrand,
@@ -17,14 +19,31 @@ export const CoolingDevice = ({
 }) => {
   const { navigate } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const screenState = useSelector((state: RootState) => state.userList)
 
-  // Send the cooling information from the room to the local storage
-  const SendToLocalStorage = () => {
-    let data = {
-      coolingBrand: coolingBrand,
-      coolingName: coolingName,
+  // Stuur de data naar de database
+  const SendToDatabase = async () => {
+    const roomId = await getRoomIdByName(roomName, screenState.name)
+    if (roomId) {
+      let data = {
+        coolingBrand: coolingBrand,
+        coolingName: coolingName,
+      }
+      try {
+        const response = await putData(roomId, data)
+
+        if (response.ok) {
+          // PUT-verzoek was succesvol
+          alert(
+            'Succesfully updated data in the database, go back to previous screen and select room again to see changes',
+          )
+        } else {
+          // PUT-verzoek was niet succesvol
+        }
+      } catch (error) {
+        console.log('Error updating data:', error)
+      }
     }
-    AsyncStorage.mergeItem(roomName, JSON.stringify(data))
   }
 
   return (
@@ -38,8 +57,8 @@ export const CoolingDevice = ({
       <Pressable
         style={[labStyle.button_light, labStyle.Choose_LightBulb_Box]}
         onPress={() => {
+          SendToDatabase()
           navigate('SetRoom', { room: roomName })
-          SendToLocalStorage()
         }}
       >
         <Text style={labStyle.Cooling_title}>Bestron Smart</Text>

@@ -4,6 +4,4 @@ export const colors = {
     title: '#fff',
     description: '#A9A9A9',
     accent: '#007AFF',
-
-    
 };

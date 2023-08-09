@@ -7,7 +7,8 @@ import { Ionicons } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 
 export default () => {
-  const { navigate, goBack } = useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const { navigate, goBack } =
+    useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   return (
     <>
       <View style={labStyle.background}>

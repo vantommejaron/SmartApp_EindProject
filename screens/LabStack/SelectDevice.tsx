@@ -20,6 +20,7 @@ export default (room: any, type: any) => {
 
   const roomName = room.route.params.room
   const typeOfDevice = room.route.params.type
+  
   if (typeOfDevice == 'light') {
     return (
       <>

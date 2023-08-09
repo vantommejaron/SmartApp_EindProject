@@ -1,5 +1,5 @@
 import Slider from '@react-native-community/slider'
-import { View, Text, Pressable, Switch } from 'react-native'
+import { View, Text, Pressable, Switch, ActivityIndicator } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import * as Haptics from 'expo-haptics'
 import Animated, {
@@ -8,15 +8,48 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 
-import { useState } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useEffect, useState } from 'react'
+import { getRoomById, getRoomIdByName, putData } from './Api'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../Redux/store'
+
 export default (roomName: any, state: any, temperature: any) => {
   const room = roomName.roomName
   const toggleState = roomName.state
   const heatingTemperature = roomName.temperature
-  const [value, setValue] = useState(heatingTemperature ? heatingTemperature : 18)
+  const [value, setValue] = useState(
+    heatingTemperature ? heatingTemperature : 0,
+  )
   const [changeColor, setChangeColor] = useState('#007AFF')
   const [checkToggle1, setcheckToggle1] = useState(toggleState)
+  const screenState = useSelector((state: RootState) => state.userList)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Stel de verwarmingsstatus in
+    const SetHeatingState = async () => {
+      await setLoading(true)
+      const roomId = await getRoomIdByName(room, screenState.name)
+      if (roomId) {
+        let data = {
+          heatingState: checkToggle1,
+        }
+        try {
+          const response = await putData(roomId, data)
+          await setLoading(false)
+          if (response.ok) {
+            // PUT-verzoek was succesvol
+          } else {
+            // PUT-verzoek was niet succesvol
+          }
+        } catch (error) {
+          SetHeatingState()
+        }
+      }
+    }
+
+    SetHeatingState()
+  }, [checkToggle1])
 
   // button animation
   const style = useAnimatedStyle(() => {
@@ -28,14 +61,61 @@ export default (roomName: any, state: any, temperature: any) => {
     }
   })
 
-  // Set the heating information from the room to the local storage
-  const SetHeating = () => {
-    const Temperature = value
-    AsyncStorage.mergeItem(room, JSON.stringify({ Temperature: Temperature }))
+  // Stel de lichtwaarde in op basis van de waarde in de database
+  const setValueTemperature = async (roomName: string) => {
+    try {
+      await setLoading(true)
+      const roomId = await getRoomIdByName(roomName, screenState.name)
+      const response = await getRoomById(roomId)
+      await setLoading(false)
+
+      if (response) {
+        const data = response
+        setValue(data.temperature)
+        setcheckToggle1(data.heatingState)
+      } 
+    } catch (error) {
+      setValueTemperature(room)
+      return null
+    }
+  }
+
+  useEffect(() => {
+    setValueTemperature(room)
+  }, [])
+
+  // Stuur de data naar de database
+  const SetHeating = async () => {
+    await setLoading(true)
+    const roomId = await getRoomIdByName(room, screenState.name)
+    if (roomId) {
+      let data = {
+        temperature: value,
+      }
+      try {
+
+        const response = await putData(roomId, data)
+        await setLoading(false)
+        if (response.ok) {
+          // PUT-verzoek was succesvol
+          setValueTemperature(room)
+        } else {
+          // PUT-verzoek was niet succesvol
+        }
+      } catch (error) {
+        SetHeating()
+      }
+    }
+  }
+  if (loading) {
+    // Show loading indicator
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    )
   }
   if (checkToggle1) {
-    // Send the heating state from the room to the local storage
-    AsyncStorage.mergeItem(room, JSON.stringify({ HeatingState: true }))
     return (
       <>
         <Switch
@@ -75,8 +155,6 @@ export default (roomName: any, state: any, temperature: any) => {
     )
   }
   if (!checkToggle1) {
-    // Send the heating state from the room to the local storage
-    AsyncStorage.mergeItem(room, JSON.stringify({ HeatingState: false }))
     return (
       <>
         <Switch

@@ -1,73 +1,112 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, RefreshControl } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Switch } from 'react-native'
 import { PlusIcon } from 'lucide-react-native'
 import Icons from '../../assets/components/Icons'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LinearGradient } from 'expo-linear-gradient'
+import {
+  getRoomIdByName,
+  getRoomsByName,
+  getRoomById,
+  putData,
+} from '../../assets/components/Api'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../../Redux/store'
+import { setDeviceState } from '../../Redux/userListSlice'
 
 export default (room: any, deleteRoom: any, deviceState: any) => {
   const { navigate } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const deleteRooms = room.route.params.deleteRoom
+  const [checkToggle1, setcheckToggle1] = React.useState(false)
   const [name, SetName] = React.useState('')
   const [roomArray, SetRoomArray] = React.useState([])
-  const deleteRooms = room.route.params.deleteRoom
-  const StateDevice = room.route.params.deviceState
+  const dispatch = useDispatch()
+  const screenState = useSelector((state: RootState) => state.userList)
 
-  // Kijken of het device aan of uit staat
-  const [checkToggle1, setcheckToggle1] = React.useState(
-    StateDevice == 'on' ? true : false,
-  )
+  const exampleFetch = () => {
+    dispatch(setDeviceState(false))
 
-  // Naam van de gebruiker ophalen
-  AsyncStorage.getItem('Settings').then(value => {
-    SetName(JSON.parse(value).userName)
-  })
+    // Haal alle kamers op uit de database met de naam van de persoon.
+    getRoomsByName(screenState.name)
+      .then(rooms => {
+        const roomNames = rooms.map((room: { roomName: any }) => room.roomName)
+        for (const room of roomNames) {
+          // Voeg de kamer alleen toe aan de array als de naam niet 'Settings' is
+          if (room !== 'Settings' && !roomArray.includes(room)) {
+            roomArray.push(room)
+          }
+        }
+      })
+      .catch(error => {
+        console.log('Error fetching data: ', error)
+      })
+  }
 
-  // Get all the rooms from the local storage
-  // Check if the room is already in the array
+  exampleFetch()
+
+  // Kijken of het device aan of uit staat bij het opstarten van de app
+  const setValueDeviceState = async () => {
+    const id = await getRoomIdByName('Settings', screenState.name)
+    if (id) {
+      const response = await getRoomById(id)
+      const data = response
+      setcheckToggle1(data.Device == 'ON' ? true : false)
+    }
+  }
+
+  useEffect(() => {
+    setValueDeviceState()
+  }, [])
+
+  // Veranderd de DeviceState in de database
+  useEffect(() => {
+    const SetDeviceState = async () => {
+      const roomId = await getRoomIdByName('Settings', screenState.name)
+      if (roomId) {
+        let data = {
+          Device: !checkToggle1 ? 'OFF' : 'ON',
+        }
+        try {
+          const response = await putData(roomId, data)
+          if (response.ok) {
+            // PUT-verzoek was succesvol
+            SetName(screenState.name)
+          } else {
+            // PUT-verzoek was niet succesvol
+          }
+        } catch (error) {
+          console.log('Error updating data:', error)
+        }
+      }
+    }
+
+    SetDeviceState()
+  }, [checkToggle1])
+
+  // Kijken of de naam in de array zit
   if (
     room.route.params.room != undefined &&
     room.route.params.room != '' &&
     room.route.params.room != deleteRooms
   ) {
-    // Add the room to the array if it is not already in the array
+    // Add the room to the array als hij er nog niet in zit
     if (roomArray.includes(room.route.params.room) == false) {
       roomArray.push(room.route.params.room)
     }
   }
-  // Delete the room from the array
+  // Verwijder de room uit de array
   if (deleteRooms != undefined && deleteRooms != '') {
     if (roomArray.includes(deleteRooms) == true) {
       roomArray.splice(roomArray.indexOf(deleteRooms), 1)
     }
   }
-  // Get all the rooms from the local storage
-  AsyncStorage.getAllKeys().then(value => {
-    for (let index = 0; index < value.length; index++) {
-      const element = value[index]
-      if (
-        element != 'Settings' &&
-        roomArray.includes(element) == false &&
-        element != deleteRooms
-      ) {
-        roomArray.push(element)
-        SetRoomArray(roomArray)
-      }
-    }
-  })
-
-  // 👇 RESETS THE APP
-  // AsyncStorage.setItem('Settings', JSON.stringify({ setupState: true }))
-  // AsyncStorage.clear()
-  // SetRoomArray([])
 
   if (checkToggle1) {
-    AsyncStorage.mergeItem('Settings', JSON.stringify({ device: 'on' }))
     return (
       <>
         <View style={labStyle.background}>
@@ -113,6 +152,7 @@ export default (room: any, deleteRoom: any, deviceState: any) => {
                       </Pressable>
                     </>
                   )}
+                  keyExtractor={item => item}
                 />
               </View>
               <Pressable style={labStyle.HomeScreenButtonEmpty}></Pressable>
@@ -132,7 +172,6 @@ export default (room: any, deleteRoom: any, deviceState: any) => {
     )
   }
   if (!checkToggle1) {
-    AsyncStorage.mergeItem('Settings', JSON.stringify({ device: 'off' }))
     return (
       <>
         <View style={labStyle.background}>
