@@ -31,7 +31,6 @@ export const Picker = (
     lightColor ? lightColor : '#FF0000',
   )
   const [value, setValue] = useState(lightBrightness ? lightBrightness : 0)
-  const [isSettingLights, setIsSettingLights] = useState(false)
   const [loading, setLoading] = useState(true)
   const screenState = useSelector((state: RootState) => state.userList)
 
@@ -61,6 +60,7 @@ export const Picker = (
       }
     }
     SetLightState()
+
   }, [checkToggle1])
 
   // Haal de lichtinformatie van de kamer op uit de database
@@ -80,15 +80,12 @@ export const Picker = (
   }
 
   useEffect(() => {
+
     setValueLight(room)
   }, [])
 
   // Stuur de lichtinformatie naar de database
   const SetLights = async () => {
-    if (isSettingLights) {
-      return
-    }
-    setIsSettingLights(true)
     await setLoading(true)
     const roomId = await getRoomIdByName(room, screenState.name)
     if (roomId) {
@@ -103,12 +100,16 @@ export const Picker = (
 
         if (response.ok) {
           // PUT-verzoek was succesvol
+          console.log('SUCCES')
         } else {
           // PUT-verzoek was niet succesvol
+          console.log('NO SUCCES')
         }
       } catch (error) {
         SetLights()
       }
+    } else {
+      // SetLights()
     }
   }
 
