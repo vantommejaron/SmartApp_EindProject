@@ -40,6 +40,7 @@ export const Heating = ({
         }
       } catch (error) {
         console.log('Error updating data:', error)
+        SendToDatabase()
       }
     }
   }

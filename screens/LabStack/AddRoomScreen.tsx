@@ -1,8 +1,4 @@
-import {
-  View,
-  Text,
-  Pressable,
-} from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -19,9 +15,11 @@ export default (roomArray: any) => {
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
   const room = roomArray.route.params.roomArray
   const [availableRoomsArray, setAvailableRoomsArray] = useState([])
+  const [loading, setLoading] = useState(false)
   const screenState = useSelector((state: RootState) => state.userList)
 
   const SendToDatabase = async (roomName: string) => {
+    await setLoading(true)
     let data = {
       roomName: roomName,
       roomIcon: roomName,
@@ -41,7 +39,8 @@ export default (roomArray: any) => {
       CoolingState: false,
     }
     try {
-      const response = postData(data)
+      const response = await postData(data)
+      await setLoading(false)
 
       if ((await response).ok) {
         // POST-verzoek is gelukt,
@@ -49,7 +48,7 @@ export default (roomArray: any) => {
         // POST-verzoek is mislukt
       }
     } catch (error) {
-      console.log('Error sending data to the database:', error)
+      SendToDatabase(roomName)
     }
   }
 
@@ -57,7 +56,10 @@ export default (roomArray: any) => {
     // Haal alle kamers op die bij de gebruiker horen
     const fetchAvailableRooms = async () => {
       try {
+        await setLoading(true)
         const response = await getRoomsByName(screenState.name)
+        console.log(response)
+        await setLoading(false)
 
         if (response) {
           const data = response
@@ -82,52 +84,64 @@ export default (roomArray: any) => {
           // GET-verzoek was niet succesvol
         }
       } catch (error) {
-        console.log('Error fetching data from the API:', error)
+        fetchAvailableRooms()
       }
     }
     fetchAvailableRooms()
   }, [])
 
-  return (
-    <>
-      <View style={labStyle.background}>
+  if (loading) {
+    return (
+      <View style={[labStyle.container]}>
         <LinearGradient
           colors={['#08004D', '#040029']}
           style={labStyle.linearGradient}
         />
-        <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
-          <Ionicons
-            name="arrow-back-outline"
-            size={20}
-            color={'white'}
-            style={labStyle.GoBack}
+        <Text style={labStyle.Logo}>LOADING...</Text>
+      </View>
+    )
+  } else {
+    return (
+      <>
+        <View style={labStyle.background}>
+          <LinearGradient
+            colors={['#08004D', '#040029']}
+            style={labStyle.linearGradient}
           />
-        </Pressable>
-        <View style={[labStyle.background, labStyle.containerRoom]}>
-          <Text style={labStyle.Room_title}>
-            Choose a room where you want to add a device
-          </Text>
-          <View style={labStyle.button_room}>
-            <FlatList
-              data={availableRoomsArray}
-              renderItem={({ item }) => (
-                <Pressable
-                  onPress={() => {
-                    SendToDatabase(item.toString())
-                    // addToArray()
-                    navigate('HomeScreen', {
-                      room: item.toString(),
-                      deleteRoom: '',
-                    })
-                  }}
-                >
-                  <Text style={labStyle.button_room_text}>→ㅤ{item}</Text>
-                </Pressable>
-              )}
+          <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
+            <Ionicons
+              name="arrow-back-outline"
+              size={20}
+              color={'white'}
+              style={labStyle.GoBack}
             />
+          </Pressable>
+          <View style={[labStyle.background, labStyle.containerRoom]}>
+            <Text style={labStyle.Room_title}>
+              Choose a room where you want to add a device
+            </Text>
+            <View style={labStyle.button_room}>
+              <FlatList
+                data={availableRoomsArray}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      SendToDatabase(item.toString())
+                      // addToArray()
+                      navigate('HomeScreen', {
+                        room: item.toString(),
+                        deleteRoom: '',
+                      })
+                    }}
+                  >
+                    <Text style={labStyle.button_room_text}>→ㅤ{item}</Text>
+                  </Pressable>
+                )}
+              />
+            </View>
           </View>
         </View>
-      </View>
-    </>
-  )
+      </>
+    )
+  }
 }

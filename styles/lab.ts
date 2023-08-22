@@ -296,7 +296,7 @@ export const lab = StyleSheet.create({
     marginBottom: 50,
     marginLeft: 'auto',
     marginRight: 'auto',
-    transform: [{ translateX: 10 }, { translateY: 30 }],
+    transform: [{ translateX: 10 }, { translateY: -150 }],
   },
   HomeScreenScrollView: {
     transform: [{ translateX: 5 }],
@@ -441,7 +441,7 @@ export const lab = StyleSheet.create({
   },
   toggleSwitch: {
     position: 'absolute',
-    top: 0,
+    top: 15,
     right: 0,
     transform: [{ scaleX: 1.3 }, { scaleY: 1.3 }, { translateY: -225 }],
   },
@@ -652,5 +652,11 @@ export const lab = StyleSheet.create({
     borderBottomRightRadius: 1000,
     borderBottomLeftRadius: 1000,
     borderTopRightRadius: 1000,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background,
   },
 })

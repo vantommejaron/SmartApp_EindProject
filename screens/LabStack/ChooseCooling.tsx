@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  Pressable,
-  ScrollView,
-  Animated
-} from 'react-native'
+import { View, Text, Pressable, ScrollView, Animated } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -19,16 +13,19 @@ import { RootState } from '../../Redux/store'
 type CheckboxComponentProps = {}
 
 export default (room: any) => {
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const fadeAnim = React.useRef(new Animated.Value(0)).current
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const [loading, setLoading] = React.useState(false)
   const roomName = room.route.params.room
   const screenState = useSelector((state: RootState) => state.userList)
 
   const updateSetupStateInDatabase = async () => {
     try {
+      await setLoading(true)
       const id = await getRoomIdByName('Settings', screenState.name)
       const response = await putData(id, { Setupstate: true })
+      await setLoading(false)
 
       if ((await response).ok) {
         // PUT-verzoek was succesvol
@@ -41,6 +38,7 @@ export default (room: any) => {
   }
 
   const SendToDatabase = async () => {
+    await setLoading(true)
     await updateSetupStateInDatabase()
     const roomId = await getRoomIdByName(roomName, screenState.name)
 
@@ -52,7 +50,8 @@ export default (room: any) => {
       }
 
       try {
-        const response = putData(roomId, data)
+        const response = await putData(roomId, data)
+        await setLoading(false)
 
         if ((await response).ok) {
           // PUT-verzoek was succesvol
@@ -61,6 +60,7 @@ export default (room: any) => {
         }
       } catch (error) {
         console.log('Error updating data:', error)
+        SendToDatabase()
       }
     }
   }
@@ -72,67 +72,80 @@ export default (room: any) => {
         duration: 1000,
         useNativeDriver: true,
       }),
-    ]).start();
-  }, [fadeAnim]);
-  return (
-    <>
-      <View style={labStyle.background}>
+    ]).start()
+  }, [fadeAnim])
+
+  if (loading) {
+    return (
+      <View style={[labStyle.container]}>
         <LinearGradient
           colors={['#08004D', '#040029']}
           style={labStyle.linearGradient}
         />
-        <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
-          <Ionicons
-            name="arrow-back-outline"
-            size={20}
-            color={'white'}
-            style={labStyle.GoBack}
-          />
-        </Pressable>
-        <View style={[labStyle.background, labStyle.containerLight]}>
-          <Text style={labStyle.LightTitle}>
-            Choose a cooling device you want to connect
-          </Text>
-          <ScrollView>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Cooling
-                coolingBrand="Bestron Smart"
-                coolingName="Bluetooth Cooling E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Cooling
-                coolingBrand="Bestron Smart"
-                coolingName="Bluetooth Cooling E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Cooling
-                coolingBrand="Bestron Smart"
-                coolingName="Bluetooth Cooling E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Cooling
-                coolingBrand="Bestron Smart"
-                coolingName="Bluetooth Cooling E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-          </ScrollView>
-          <Pressable
-            onPress={() => {
-              SendToDatabase()
-              navigate('HomeScreen', { room: roomName })
-            }}
-          >
-            <Text style={labStyle.skipButton}>SKIP</Text>
-          </Pressable>
-        </View>
+        <Text style={labStyle.Logo}>LOADING...</Text>
       </View>
-    </>
-  )
+    )
+  } else {
+    return (
+      <>
+        <View style={labStyle.background}>
+          <LinearGradient
+            colors={['#08004D', '#040029']}
+            style={labStyle.linearGradient}
+          />
+          <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
+            <Ionicons
+              name="arrow-back-outline"
+              size={20}
+              color={'white'}
+              style={labStyle.GoBack}
+            />
+          </Pressable>
+          <View style={[labStyle.background, labStyle.containerLight]}>
+            <Text style={labStyle.LightTitle}>
+              Choose a cooling device you want to connect
+            </Text>
+            <ScrollView>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Cooling
+                  coolingBrand="Bestron Smart"
+                  coolingName="Bluetooth Cooling E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Cooling
+                  coolingBrand="Bestron Smart"
+                  coolingName="Bluetooth Cooling E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Cooling
+                  coolingBrand="Bestron Smart"
+                  coolingName="Bluetooth Cooling E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Cooling
+                  coolingBrand="Bestron Smart"
+                  coolingName="Bluetooth Cooling E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+            </ScrollView>
+            <Pressable
+              onPress={() => {
+                SendToDatabase()
+                navigate('HomeScreen', { room: roomName })
+              }}
+            >
+              <Text style={labStyle.skipButton}>SKIP</Text>
+            </Pressable>
+          </View>
+        </View>
+      </>
+    )
+  }
 }

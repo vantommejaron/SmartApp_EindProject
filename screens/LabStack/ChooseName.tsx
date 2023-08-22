@@ -23,8 +23,9 @@ export default () => {
     // Kijken of het een heldige naam is
     if (text !== '' && text !== 'Your name') {
       // Sla de naam op in de Local Storage en Redux store
-      AsyncStorage.setItem('Name', text)
-      dispatch(setName(text))
+      await AsyncStorage.removeItem('Name')
+      await AsyncStorage.setItem('Name', text)
+      await dispatch(setName(text))
       try {
         const roomId = await getRoomIdByName('Settings', text)
         // Kijken of de naam in de database staat
@@ -46,11 +47,13 @@ export default () => {
             navigate('ChooseRoom')
           } else {
             // POST-verzoek was niet succesvol
-            console.log('Failed to send data to the database')
+            // console.log('Failed to send data to the database')
+            SendToDatabase(text)
           }
         }
       } catch (error) {
-        console.error('Error sending data:', error)
+        // console.error('Error sending data:', error)
+        SendToDatabase(text)
       }
     } else {
       alert('Please enter your name')

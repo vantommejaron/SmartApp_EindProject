@@ -48,3 +48,5 @@ https://github.com/vantommejaron/SmartApp_EindProject.git
 - https://snack.expo.dev/@tafelito/switch-example
   `(Toggle switch)`
 
+# Start code
+npm run start

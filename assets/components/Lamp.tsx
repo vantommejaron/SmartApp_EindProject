@@ -31,6 +31,7 @@ export const Lamp = ({lightName, lightBrand, roomName} :{lightName:string, light
             }
           } catch (error) {
             console.log('Error updating data:', error)
+            SendToDatabase()
           }
         }
       }

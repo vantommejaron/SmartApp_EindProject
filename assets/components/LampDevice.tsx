@@ -1,5 +1,5 @@
 import React from 'react'
-import { Pressable, Text } from 'react-native'
+import { Alert, Pressable, Text } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { lab as labStyle } from '../../styles/lab'
 import { useNavigation } from '@react-navigation/native'
@@ -39,14 +39,29 @@ export const LampDevice = ({
 
         if (response.ok) {
           // PUT-verzoek was succesvol
-          alert(
-            'Succesfully updated data in the database, go back to previous screen and select room again to see changes',
+          Alert.alert(
+            'Add device',
+            'If you want to see the changes, go back to previous screen and select room again. Do you want to go back to previous screen?',
+            [
+              {
+                text: 'NO',
+                style: 'cancel',
+              },
+              {
+                text: 'YES',
+                onPress: async () => {
+                  navigate('HomeScreen', { room: '', deleteRoom: '' })
+                },
+                style: 'default',
+              },
+            ],
           )
         } else {
           // PUT-verzoek was niet succesvol
         }
       } catch (error) {
         console.log('Error updating data:', error)
+        SendToDatabase()
       }
     }
   }

@@ -46,7 +46,7 @@ export const Cooling = ({
       }
 
       try {
-        const response = putData(roomId, data)
+        const response = await putData(roomId, data)
 
         if ((await response).ok) {
           // PUT-verzoek was succesvol
@@ -55,6 +55,7 @@ export const Cooling = ({
         }
       } catch (error) {
         console.log('Error updating data:', error)
+        SendToDatabase()
       }
     }
   }

@@ -21,7 +21,7 @@ export default (roomName: any, state: any, temperature: any) => {
     heatingTemperature ? heatingTemperature : 0,
   )
   const [changeColor, setChangeColor] = useState('#007AFF')
-  const [checkToggle1, setcheckToggle1] = useState(toggleState)
+  const [checkToggle1, setcheckToggle1] = useState()
   const screenState = useSelector((state: RootState) => state.userList)
   const [loading, setLoading] = useState(true)
 

@@ -48,12 +48,15 @@ const Device = ({
 
   const { navigate } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+    const [loading, setLoading] = useState(false)
   const screenState = useSelector((state: RootState) => state.userList)
 
   const getRoomInfo = async (roomName: string) => {
     try {
+      await setLoading(true)
       const roomId = await getRoomIdByName(roomName, screenState.name)
       const response = await getRoomById(roomId)
+      await setLoading(false)
 
       if (response) {
         const data = response
@@ -234,15 +237,16 @@ export default (room: any) => {
   // Verwijderen van een kamer uit de database
   const deleteRoomFromDatabase = async (roomName: string) => {
     try {
+      
       const id = await getRoomIdByName(roomName, screenState.name)
-      const response = deleteRoomById(id)
+      const response = await deleteRoomById(id)
       if ((await response).ok) {
         // Delete-verzoek was succesvol
       } else {
         // Delete-verzoek was niet succesvol
       }
     } catch (error) {
-      console.log('Error deleting room:', error)
+      deleteRoomFromDatabase(roomName)
     }
   }
 

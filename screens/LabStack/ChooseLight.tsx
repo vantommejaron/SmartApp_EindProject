@@ -17,10 +17,12 @@ export default (room: any) => {
 
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const [loading, setLoading] = React.useState(false)
   const roomName = room.route.params.room
   const screenState = useSelector((state: RootState) => state.userList)
 
   const SendToDatabase = async () => {
+    await setLoading(true)
     const roomId = await getRoomIdByName(roomName, screenState.name)
     if (roomId) {
       try {
@@ -28,9 +30,10 @@ export default (room: any) => {
           lightBrand: '',
           lightName: '',
           brightness: 0,
-          color: '',
+          color: 'FF0000',
         }
-        const response = putData(roomId, data)
+        const response = await putData(roomId, data)
+        await setLoading(false)
 
         if ((await response).ok) {
           // PUT-verzoek was succesvol
@@ -38,7 +41,8 @@ export default (room: any) => {
           // PUT-verzoek was niet succesvol
         }
       } catch (error) {
-        console.log('Error updating data:', error)
+        // console.log('Error updating data:', error)
+        SendToDatabase()
       }
     }
   }
@@ -51,86 +55,99 @@ export default (room: any) => {
       }),
     ]).start()
   }, [fadeAnim])
-  return (
-    <>
-      <View style={labStyle.background}>
+
+  if (loading) {
+    return (
+      <View style={[labStyle.container]}>
         <LinearGradient
           colors={['#08004D', '#040029']}
           style={labStyle.linearGradient}
         />
-        <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
-          <Ionicons
-            name="arrow-back-outline"
-            size={20}
-            color={'white'}
-            style={labStyle.GoBack}
-          />
-        </Pressable>
-        <View style={[labStyle.background, labStyle.containerLight]}>
-          <Text style={labStyle.LightTitle}>
-            Choose a light device you want to connect
-          </Text>
-          <ScrollView>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Lamp
-                lightBrand="Philips Smart"
-                lightName="Philips Smart LED E2"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Lamp
-                lightBrand="Philips Smart"
-                lightName="Philips Smart LED E2"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Lamp
-                lightBrand="Philips Smart"
-                lightName="Philips Smart LED E2"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Lamp
-                lightBrand="Philips Smart"
-                lightName="Philips Smart LED E2"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Lamp
-                lightBrand="Philips Smart"
-                lightName="Philips Smart LED E2"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Lamp
-                lightBrand="Philips Smart"
-                lightName="Philips Smart LED E2"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Lamp
-                lightBrand="Philips Smart"
-                lightName="Philips Smart LED E2"
-                roomName={roomName}
-              />
-            </Animated.View>
-          </ScrollView>
-          <Pressable
-            onPress={() => {
-              navigate('ChooseHeating', { room: roomName })
-              SendToDatabase()
-            }}
-          >
-            <Text style={labStyle.skipButton}>SKIP</Text>
-          </Pressable>
-        </View>
+        <Text style={labStyle.Logo}>LOADING...</Text>
       </View>
-    </>
-  )
+    )
+  } else {
+    return (
+      <>
+        <View style={labStyle.background}>
+          <LinearGradient
+            colors={['#08004D', '#040029']}
+            style={labStyle.linearGradient}
+          />
+          <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
+            <Ionicons
+              name="arrow-back-outline"
+              size={20}
+              color={'white'}
+              style={labStyle.GoBack}
+            />
+          </Pressable>
+          <View style={[labStyle.background, labStyle.containerLight]}>
+            <Text style={labStyle.LightTitle}>
+              Choose a light device you want to connect
+            </Text>
+            <ScrollView>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Lamp
+                  lightBrand="Philips Smart"
+                  lightName="Philips Smart LED E2"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Lamp
+                  lightBrand="Philips Smart"
+                  lightName="Philips Smart LED E2"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Lamp
+                  lightBrand="Philips Smart"
+                  lightName="Philips Smart LED E2"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Lamp
+                  lightBrand="Philips Smart"
+                  lightName="Philips Smart LED E2"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Lamp
+                  lightBrand="Philips Smart"
+                  lightName="Philips Smart LED E2"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Lamp
+                  lightBrand="Philips Smart"
+                  lightName="Philips Smart LED E2"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Lamp
+                  lightBrand="Philips Smart"
+                  lightName="Philips Smart LED E2"
+                  roomName={roomName}
+                />
+              </Animated.View>
+            </ScrollView>
+            <Pressable
+              onPress={() => {
+                navigate('ChooseHeating', { room: roomName })
+                SendToDatabase()
+              }}
+            >
+              <Text style={labStyle.skipButton}>SKIP</Text>
+            </Pressable>
+          </View>
+        </View>
+      </>
+    )
+  }
 }

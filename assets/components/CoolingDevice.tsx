@@ -1,4 +1,4 @@
-import { Pressable, Text } from 'react-native'
+import { Alert, Pressable, Text } from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -34,11 +34,26 @@ export const CoolingDevice = ({
 
         if (response.ok) {
           // PUT-verzoek was succesvol
-          alert(
-            'Succesfully updated data in the database, go back to previous screen and select room again to see changes',
+          Alert.alert(
+            'Add device',
+            'If you want to see the changes, go back to previous screen and select room again. Do you want to go back to previous screen?',
+            [
+              {
+                text: 'NO',
+                style: 'cancel',
+              },
+              {
+                text: 'YES',
+                onPress: async () => {
+                  navigate('HomeScreen', { room: '', deleteRoom: '' })
+                },
+                style: 'default',
+              },
+            ],
           )
         } else {
           // PUT-verzoek was niet succesvol
+          SendToDatabase()
         }
       } catch (error) {
         console.log('Error updating data:', error)

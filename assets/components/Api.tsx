@@ -36,6 +36,7 @@ export const getRoomIdByName = async (roomName: string, name: string) => {
       }
     } else {
       console.log('Failed to fetch room data.')
+      
     }
   } catch (error) {
     console.log('Error getting room ID:', error)

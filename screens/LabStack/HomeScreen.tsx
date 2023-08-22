@@ -1,4 +1,10 @@
-import { View, Text, Pressable, RefreshControl } from 'react-native'
+import {
+  View,
+  Text,
+  Pressable,
+  RefreshControl,
+  ActivityIndicator,
+} from 'react-native'
 import { lab as labStyle } from '../../styles/lab'
 import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
@@ -25,14 +31,16 @@ export default (room: any, deleteRoom: any, deviceState: any) => {
   const [checkToggle1, setcheckToggle1] = React.useState(false)
   const [name, SetName] = React.useState('')
   const [roomArray, SetRoomArray] = React.useState([])
+  const [isLoading, setIsLoading] = React.useState(true)
+
   const dispatch = useDispatch()
   const screenState = useSelector((state: RootState) => state.userList)
 
-  const exampleFetch = () => {
-    dispatch(setDeviceState(false))
+  const exampleFetch = async () => {
+    await dispatch(setDeviceState(false))
 
     // Haal alle kamers op uit de database met de naam van de persoon.
-    getRoomsByName(screenState.name)
+    await getRoomsByName(screenState.name)
       .then(rooms => {
         const roomNames = rooms.map((room: { roomName: any }) => room.roomName)
         for (const room of roomNames) {
@@ -43,17 +51,20 @@ export default (room: any, deleteRoom: any, deviceState: any) => {
         }
       })
       .catch(error => {
-        console.log('Error fetching data: ', error)
+        // console.log('Error fetching data: ', error)
       })
+      await setIsLoading(false)
   }
 
   exampleFetch()
 
   // Kijken of het device aan of uit staat bij het opstarten van de app
   const setValueDeviceState = async () => {
+    await setIsLoading(true)
     const id = await getRoomIdByName('Settings', screenState.name)
     if (id) {
       const response = await getRoomById(id)
+      await setIsLoading(false)
       const data = response
       setcheckToggle1(data.Device == 'ON' ? true : false)
     }
@@ -66,6 +77,7 @@ export default (room: any, deleteRoom: any, deviceState: any) => {
   // Veranderd de DeviceState in de database
   useEffect(() => {
     const SetDeviceState = async () => {
+      await setIsLoading(true)
       const roomId = await getRoomIdByName('Settings', screenState.name)
       if (roomId) {
         let data = {
@@ -73,6 +85,7 @@ export default (room: any, deleteRoom: any, deviceState: any) => {
         }
         try {
           const response = await putData(roomId, data)
+          await setIsLoading(false)
           if (response.ok) {
             // PUT-verzoek was succesvol
             SetName(screenState.name)
@@ -106,6 +119,13 @@ export default (room: any, deleteRoom: any, deviceState: any) => {
     }
   }
 
+  if (isLoading) {
+    return (
+      <View style={labStyle.loadingContainer}>
+          <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    )
+  }
   if (checkToggle1) {
     return (
       <>
@@ -128,7 +148,8 @@ export default (room: any, deleteRoom: any, deviceState: any) => {
               <Text style={labStyle.User1}>Hello, </Text>
               <Text style={labStyle.User2}>{name}</Text>
             </Text>
-            <ScrollView style={labStyle.HomeScreenScrollView}>
+            {/* <ScrollView style={labStyle.HomeScreenScrollView}> */}
+            <View style={labStyle.HomeScreenScrollView}>
               <View style={labStyle.HomeScreenBox}>
                 <FlatList
                   data={roomArray}
@@ -156,7 +177,8 @@ export default (room: any, deleteRoom: any, deviceState: any) => {
                 />
               </View>
               <Pressable style={labStyle.HomeScreenButtonEmpty}></Pressable>
-            </ScrollView>
+            </View>
+            {/* </ScrollView> */}
 
             <Pressable
               style={labStyle.HomeScreenAddButton}

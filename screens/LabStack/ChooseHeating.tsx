@@ -9,6 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { getRoomIdByName, putData } from '../../assets/components/Api'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../Redux/store'
+import { Send } from 'lucide-react-native'
 
 type CheckboxComponentProps = {}
 
@@ -17,10 +18,12 @@ export default (room: any) => {
 
   const { navigate, goBack } =
     useNavigation<StackNavigationProp<ParamListBase, 'LabStack'>>()
+  const [loading, setLoading] = React.useState(false)
   const roomName = room.route.params.room
   const screenState = useSelector((state: RootState) => state.userList)
 
   const SendToDatabase = async () => {
+    await setLoading(true)
     const roomId = await getRoomIdByName(roomName, screenState.name)
     if (roomId) {
       let data = {
@@ -30,7 +33,8 @@ export default (room: any) => {
       }
 
       try {
-        const response = putData(roomId, data)
+        const response = await putData(roomId, data)
+        await setLoading(false)
         if ((await response).ok) {
           // PUT-verzoek was succesvol
         } else {
@@ -38,10 +42,10 @@ export default (room: any) => {
         }
       } catch (error) {
         console.log('Error updating data:', error)
+        SendToDatabase()
       }
     }
   }
-
 
   React.useEffect(() => {
     Animated.stagger(100, [
@@ -53,93 +57,105 @@ export default (room: any) => {
     ]).start()
   }, [fadeAnim])
 
-  return (
-    <>
-      <View style={labStyle.background}>
+  if (loading) {
+    return (
+      <View style={[labStyle.container]}>
         <LinearGradient
           colors={['#08004D', '#040029']}
           style={labStyle.linearGradient}
         />
-        <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
-          <Ionicons
-            name="arrow-back-outline"
-            size={20}
-            color={'white'}
-            style={labStyle.GoBack}
-          />
-        </Pressable>
-        <View style={[labStyle.background, labStyle.containerLight]}>
-          <Text style={labStyle.LightTitle}>
-            Choose a heating device you want to connect
-          </Text>
-          <ScrollView>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Heating
-                heatingBrand="Hama"
-                heatingName="Bluetooth heater E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Heating
-                heatingBrand="Hama"
-                heatingName="Bluetooth heater E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Heating
-                heatingBrand="Hama"
-                heatingName="Bluetooth heater E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Heating
-                heatingBrand="Hama"
-                heatingName="Bluetooth heater E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Heating
-                heatingBrand="Hama"
-                heatingName="Bluetooth heater E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Heating
-                heatingBrand="Hama"
-                heatingName="Bluetooth heater E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Heating
-                heatingBrand="Hama"
-                heatingName="Bluetooth heater E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <Heating
-                heatingBrand="Hama"
-                heatingName="Bluetooth heater E27"
-                roomName={roomName}
-              />
-            </Animated.View>
-          </ScrollView>
-          <Pressable
-            onPress={() => {
-              navigate('ChooseCooling', { room: roomName })
-              SendToDatabase()
-            }}
-          >
-            <Text style={labStyle.skipButton}>SKIP</Text>
-          </Pressable>
-        </View>
+        <Text style={labStyle.Logo}>LOADING...</Text>
       </View>
-    </>
-  )
+    )
+  } else {
+    return (
+      <>
+        <View style={labStyle.background}>
+          <LinearGradient
+            colors={['#08004D', '#040029']}
+            style={labStyle.linearGradient}
+          />
+          <Pressable style={labStyle.GoBack} onPress={() => goBack()}>
+            <Ionicons
+              name="arrow-back-outline"
+              size={20}
+              color={'white'}
+              style={labStyle.GoBack}
+            />
+          </Pressable>
+          <View style={[labStyle.background, labStyle.containerLight]}>
+            <Text style={labStyle.LightTitle}>
+              Choose a heating device you want to connect
+            </Text>
+            <ScrollView>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Heating
+                  heatingBrand="Hama"
+                  heatingName="Bluetooth heater E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Heating
+                  heatingBrand="Hama"
+                  heatingName="Bluetooth heater E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Heating
+                  heatingBrand="Hama"
+                  heatingName="Bluetooth heater E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Heating
+                  heatingBrand="Hama"
+                  heatingName="Bluetooth heater E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Heating
+                  heatingBrand="Hama"
+                  heatingName="Bluetooth heater E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Heating
+                  heatingBrand="Hama"
+                  heatingName="Bluetooth heater E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Heating
+                  heatingBrand="Hama"
+                  heatingName="Bluetooth heater E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+              <Animated.View style={{ opacity: fadeAnim }}>
+                <Heating
+                  heatingBrand="Hama"
+                  heatingName="Bluetooth heater E27"
+                  roomName={roomName}
+                />
+              </Animated.View>
+            </ScrollView>
+            <Pressable
+              onPress={() => {
+                navigate('ChooseCooling', { room: roomName })
+                SendToDatabase()
+              }}
+            >
+              <Text style={labStyle.skipButton}>SKIP</Text>
+            </Pressable>
+          </View>
+        </View>
+      </>
+    )
+  }
 }

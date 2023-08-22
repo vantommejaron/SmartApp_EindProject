@@ -11,7 +11,7 @@ import Animated, {
   useAnimatedStyle,
   Easing,
 } from 'react-native-reanimated'
-import { getRoomById, getRoomIdByName, putData } from './Api'
+import { getRoomById, getRoomIdByName, getRoomsByName, putData } from './Api'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../Redux/store'
 
@@ -25,7 +25,7 @@ export const Picker = (
   const toggleState = roomName.state
   const lightBrightness = roomName.brightness
   const lightColor = roomName.color
-  const [checkToggle1, setcheckToggle1] = useState(toggleState)
+  const [checkToggle1, setcheckToggle1] = useState()
   const [changeColor, setChangeColor] = useState('#007AFF')
   const [colorValue, setColorValue] = useState(
     lightColor ? lightColor : '#FF0000',
@@ -40,6 +40,7 @@ export const Picker = (
     const SetLightState = async () => {
       await setLoading(true)
       const roomId = await getRoomIdByName(room, screenState.name)
+      const responds = await getRoomById(roomId)
       if (roomId) {
         let data = {
           lightState: checkToggle1,
